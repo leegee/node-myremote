@@ -5,16 +5,21 @@
   export let ws: WebSocket;
 </script>
 
-<style>
-  .icon-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px; 
-  }
-</style>
-
-<div class="icon-list">
+<section class="icon-list">
   {#each commands as command}
       <LargeIcon {command} {ws}/>
   {/each}
-</div>
+</section>
+
+<style>
+  .icon-list {
+    display: flex;
+    flex-direction: row;
+    gap: 10pt;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+  }
+</style>
+

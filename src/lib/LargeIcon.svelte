@@ -14,27 +14,42 @@
     }
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<button
+    class="icon"
+    style="--icon-color: {command.color}; --icon-size: 64pt;"
+    on:click={handleClick}
+>
+    <div class='icon'>{command.icon}</div>
+    <div class='text'>{command.text}</div>
+</button>
+
 <style>
     button {
+        padding: 1em;
+    }
+
+    button .icon {
         width: var(--icon-size, 100pt);
         height: var(--icon-size, 100pt);
+        font-size: calc( var(--icon-size) / 1.8);
         background-color: var(--icon-color, blue);
-        font-size: calc( var(--icon-size) / 2);
+        line-height: 1;
+        color: white;
         font-weight: 500;
         font-family: inherit;
-        border-radius: 50%;
+        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        color: white;
-        transition: background-color 0.3s;
+        align-content: stretch;
         border-radius: 50%;
-        border: 1px solid transparent;
-        padding: 0.6em 1.2em;
-        background-color: var(--icon-color);
+        border: 1pt solid transparent;
+        padding: 0;
+        padding-bottom: 0.15em;
         cursor: pointer;
-        transition: border-color 0.25s;
+        transition: border-color 0.25s, background-color 0.3s;
     }
 
     button:hover {
@@ -46,14 +61,9 @@
         outline: 4px auto -webkit-focus-ring-color;
     }
 
+    button .text {
+        margin-top: 1em;
+    }
+
 </style>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<button
-    class="icon"
-    style="--icon-color: {command.color}; --icon-size: 64pt;"
-    on:click={handleClick}
->
-    {command.label}
-</button>

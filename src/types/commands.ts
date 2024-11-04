@@ -1,8 +1,8 @@
 export type Modifier = 'control' | 'shift' | 'alt' | 'comamnd';
 
 export interface Command {
-    label: string;
-    alt: string;
+    icon: string;
+    text: string;
     color: string;
     key: string;
     modifiers?: Modifier[];
