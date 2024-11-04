@@ -67,7 +67,14 @@
     <p style="background-color: red; color: white; font-weight: bold">
       {connectionError}
     </p>
+    <p>
+      Is {import.meta.env.VITE_APP_TITLE || "MyRemote"} running on the same machine
+      as the DAW?
+    </p>
   {:else}
-    <p>Connecting to WebSocket...</p>
+    <p>
+      Connecting to {import.meta.env.VITE_APP_TITLE || "MyRemote"} service that should
+      be running on the same machine as the DAW...
+    </p>
   {/if}
 </main>

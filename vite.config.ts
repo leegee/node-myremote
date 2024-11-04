@@ -7,6 +7,7 @@ export default defineConfig({
   define: {
     'process.env': {
       VITE_WS_PORT: process.env.VITE_WS_PORT || 8223,
+      VITE_APP_TITLE: process.env.VITE_APP_TITLE || "MyRemote",
     },
   },
 });

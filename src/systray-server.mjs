@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const appTitle = 'MyRemote';
+const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const reContainsCubase = /cubase/i;
 
 function kill ( tray ) {
