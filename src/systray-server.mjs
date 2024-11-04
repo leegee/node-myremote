@@ -3,39 +3,11 @@ import Tray from 'trayicon';
 import robot from 'robotjs';
 import { windowManager } from 'node-window-manager';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const iconPath = path.join(
-    path.dirname( fileURLToPath( import.meta.url ) ),
-    'systray-icon.ico'
-);
 
 dotenv.config();
 
-const title = 'MyRemote';
+const appTitle = 'MyRemote';
 const reContainsCubase = /cubase/i;
-
-const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT || 8223 } );
-
-wss.on( 'connection', ( ws ) => {
-    console.log( 'Client connected' );
-
-    ws.on( 'message', processMessage );
-
-    ws.on( 'close', () => {
-        console.log( 'Client disconnected' );
-    } );
-} );
-
-Tray.create( {
-    title: 'MyRemote',
-    // icon: iconPath,
-    action: function ( tray ) {
-        let quit = tray.item( "Quit " + title, () => kill( tray ) );
-        tray.setMenu( quit );
-    }
-} );
 
 function kill ( tray ) {
     tray.kill();
@@ -85,4 +57,24 @@ async function sendShortcut ( command ) {
         console.error( "Error sending key combination:", error );
     }
 }
+
+
+Tray.create(
+    ( tray ) => {
+        const quit = tray.item( "Quit " + appTitle, () => kill( tray ) );
+        tray.setMenu( quit );
+        tray.setTitle( appTitle );
+
+        const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT || 8223 } );
+        wss.on( 'connection', ( ws ) => {
+            console.log( 'Client connected' );
+            tray.notify( appTitle, 'Connected' );
+            ws.on( 'message', processMessage );
+            ws.on( 'close', () => {
+                console.log( 'Client disconnected' );
+            } );
+        } );
+
+    }
+);
 
