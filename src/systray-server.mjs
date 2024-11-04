@@ -9,7 +9,7 @@ dotenv.config();
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const reContainsCubase = /cubase/i;
 
-function kill ( tray ) {
+function kill ( tray, wss ) {
     tray.kill();
     wss.close();
 }
@@ -61,9 +61,6 @@ async function sendShortcut ( command ) {
 
 Tray.create(
     ( tray ) => {
-        const quit = tray.item( "Quit " + appTitle, () => kill( tray ) );
-        tray.setMenu( quit );
-        tray.setTitle( appTitle );
 
         const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT || 8223 } );
         wss.on( 'connection', ( ws ) => {
@@ -75,6 +72,9 @@ Tray.create(
             } );
         } );
 
+        const quit = tray.item( "Quit " + appTitle, () => kill( tray, wss ) );
+        tray.setMenu( quit );
+        tray.setTitle( appTitle );
     }
 );
 
