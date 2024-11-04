@@ -9,7 +9,7 @@ dotenv.config();
 const title = 'MyRemote';
 const reContainsCubase = /cubase/i;
 
-const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT } );
+const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT || 8223 } );
 
 wss.on( 'connection', ( ws ) => {
     console.log( 'Client connected' );

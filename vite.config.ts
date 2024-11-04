@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [svelte()],
   define: {
     'process.env': {
-      VITE_WS_PORT: process.env.VITE_WS_PORT,
+      VITE_WS_PORT: process.env.VITE_WS_PORT || 8223,
     },
   },
 });
