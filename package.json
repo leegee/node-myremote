@@ -14,6 +14,7 @@
     "get-windows": "^9.2.0",
     "node-window-manager": "^2.2.4",
     "robotjs": "^0.6.0",
-    "trayicon": "^1.2.2"
+    "trayicon": "^1.2.2",
+    "ws": "^8.18.0"
   }
 }

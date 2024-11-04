@@ -1,34 +1,33 @@
+import { WebSocketServer } from 'ws';
 import Tray from 'trayicon';
 import robot from 'robotjs';
 import { windowManager } from 'node-window-manager';
 
+const title = 'MyRemote';
 const reContainsCubase = /^cubase/i;
 
-// Create the tray icon
-Tray.create( function ( tray ) {
-    let main = tray.item( "Power" );
+const wss = new WebSocketServer( { port: 8080 } );
 
-    main.add( tray.item( "Send Ctrl+S to Cubase", async () => {
-        try {
-            const cubaseWindow = await getCubaseWindow();
-            if ( !cubaseWindow ) {
-                console.log( "No active Cubase window found." );
-                return;
-            }
+wss.on( 'connection', ( ws ) => {
+    console.log( 'Client connected' );
 
-            robot.keyToggle( 'control', 'down' );
-            robot.keyTap( 's' );
-            robot.keyToggle( 'control', 'up' );
+    ws.on( 'message', processMessage );
 
-            console.log( "Sent Ctrl + S to Cubase." );
-        } catch ( error ) {
-            console.error( "Error sending key combination:", error );
-        }
-    } ) );
-
-    let quit = tray.item( "Quit", () => tray.kill() );
-    tray.setMenu( main, quit );
+    ws.on( 'close', () => {
+        console.log( 'Client disconnected' );
+    } );
 } );
+
+Tray.create( function ( tray ) {
+    // tray.setIcon( 'icon.png' );
+    let quit = tray.item( "Quit " + title, () => kill( tray ) );
+    tray.setMenu( quit );
+} );
+
+function kill ( tray ) {
+    tray.kill();
+    wss.close();
+}
 
 async function getCubaseWindow () {
     for ( const window of windowManager.getWindows() ) {
@@ -41,3 +40,24 @@ async function getCubaseWindow () {
     return null;
 }
 
+async function sendShortcut () {
+    try {
+        const cubaseWindow = await getCubaseWindow();
+        if ( !cubaseWindow ) {
+            console.log( "No active Cubase window found." );
+            return;
+        }
+
+        robot.keyToggle( 'control', 'down' );
+        robot.keyTap( 's' );
+        robot.keyToggle( 'control', 'up' );
+
+        console.log( "Sent Ctrl + S to Cubase." );
+    } catch ( error ) {
+        console.error( "Error sending key combination:", error );
+    }
+}
+
+function processMessage ( message ) {
+    console.log( `Received message: ${ message }` );
+}
