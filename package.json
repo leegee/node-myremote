@@ -1,5 +1,5 @@
 {
-  "name": "remote-shortcuts",
+  "name": "node-myremote",
   "description": "Testing the ability to send shortcuts to Cubase from a tablet",
   "version": "1.0.0",
   "main": "index.mjs",
