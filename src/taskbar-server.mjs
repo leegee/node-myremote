@@ -2,11 +2,14 @@ import { WebSocketServer } from 'ws';
 import Tray from 'trayicon';
 import robot from 'robotjs';
 import { windowManager } from 'node-window-manager';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const title = 'MyRemote';
 const reContainsCubase = /^cubase/i;
 
-const wss = new WebSocketServer( { port: 8080 } );
+const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT } );
 
 wss.on( 'connection', ( ws ) => {
     console.log( 'Client connected' );

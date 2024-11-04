@@ -1,3 +1,4 @@
 # node-myremote
 
-Testing the ability to send key combinations to Cubase from a mobile 'phone and tablet, using only scripting languages.'
+Exploring sending shortcuts to Cubase using scripting tools.
+
