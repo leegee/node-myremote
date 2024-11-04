@@ -6,16 +6,13 @@ Exploring sending shortcuts to Cubase using scripting tools.
     node src/taskbar-server.mjs
     bun run dev
 
+## Limitations
 
-    {
-      "label": "string",         // Human-readible 
-      "key": "string",           // The key to be pressed (e.g., "s" for save)
-      "modifiers": [             // An array of any modifier keys to be used
-        "CTRL", 
-        "ALT",
-        "SHIFT"
-      ]
-    }
-    
+* The program to be controlled must have 'Cubase' in its path.
+* The Cubase window will be left in 'always on top mode.'
 
 
+## Resources
+
+* https://www.utf8icons.com
+* https://robotjs.io/docs/syntax

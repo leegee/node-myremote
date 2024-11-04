@@ -33,14 +33,15 @@ function kill ( tray ) {
 }
 
 async function getCubaseWindow () {
+    let rv = null;
     for ( const window of windowManager.getWindows() ) {
         if ( reContainsCubase.test( window.path ) ) {
-            console.log( "Found Cubase window:", window );
             window.bringToTop();
-            return window;
+            rv = window;
+            break;
         }
     }
-    return null;
+    return rv;
 }
 
 function processMessage ( message ) {
@@ -62,27 +63,10 @@ async function sendShortcut ( command ) {
             return;
         }
 
-        if ( command.modifiers.includes( 'CTRL' ) ) {
-            robot.keyToggle( 'control', 'down' );
-        }
-        if ( command.modifiers.includes( 'ALT' ) ) {
-            robot.keyToggle( 'alt', 'down' );
-        }
-        if ( command.modifiers.includes( 'SHIFT' ) ) {
-            robot.keyToggle( 'shift', 'down' );
-        }
+        const modifiers = command.modifiers instanceof Array ?
+            command.modifiers.filter( 'control', 'shift', 'alt', 'command' ) : [];
 
-        robot.keyTap( command.key );
-
-        if ( command.modifiers.includes( 'CTRL' ) ) {
-            robot.keyToggle( 'control', 'down' );
-        }
-        if ( command.modifiers.includes( 'ALT' ) ) {
-            robot.keyToggle( 'alt', 'down' );
-        }
-        if ( command.modifiers.includes( 'SHIFT' ) ) {
-            robot.keyToggle( 'shift', 'down' );
-        }
+        robot.keyTap( command.key, modifiers );
 
         console.log( "Sent command." );
     }
