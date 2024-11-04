@@ -21,10 +21,13 @@ wss.on( 'connection', ( ws ) => {
     } );
 } );
 
-Tray.create( function ( tray ) {
-    // tray.setIcon( 'icon.png' );
-    let quit = tray.item( "Quit " + title, () => kill( tray ) );
-    tray.setMenu( quit );
+Tray.create( {
+    title: 'MyRemote',
+    icon: './systray-icon.png',
+    action: function ( tray ) {
+        let quit = tray.item( "Quit " + title, () => kill( tray ) );
+        tray.setMenu( quit );
+    }
 } );
 
 function kill ( tray ) {

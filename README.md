@@ -1,6 +1,6 @@
 # node-myremote
 
-Exploring sending shortcuts to Cubase using scripting tools.
+Exploring sending key commands to Cubase using scripting tools.
 
     npm i                             # bun dislikes some deps
     node src/taskbar-server.mjs
