@@ -3,6 +3,13 @@ import Tray from 'trayicon';
 import robot from 'robotjs';
 import { windowManager } from 'node-window-manager';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const iconPath = path.join(
+    path.dirname( fileURLToPath( import.meta.url ) ),
+    'systray-icon.ico'
+);
 
 dotenv.config();
 
@@ -23,7 +30,7 @@ wss.on( 'connection', ( ws ) => {
 
 Tray.create( {
     title: 'MyRemote',
-    icon: './systray-icon.png',
+    // icon: iconPath,
     action: function ( tray ) {
         let quit = tray.item( "Quit " + title, () => kill( tray ) );
         tray.setMenu( quit );
