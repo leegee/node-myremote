@@ -1,17 +1,15 @@
 <script lang="ts">
-    export let iconLabel = "Click me!";
-    export let iconColor = "blue";
-    export let iconSize = "64pt";
+    import type { Command } from '../types/commands';
+    export let command: Command;
     export let ws: WebSocket; 
 
     function handleClick() {
-        alert(`You clicked on ${iconLabel}`);
+        console.debug("You clicked on", command);
         
-        // Send a WebSocket message
         if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(`Message from ${iconLabel}`);
+            ws.send(JSON.stringify(command));
         } else {
-            console.error('WebSocket is not open. Message not sent.');
+            console.error('WebSocket is not open. Comamnd not sent.');
         }
     }
 </script>
@@ -36,10 +34,12 @@
     }
 </style>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     class="icon"
-    style="--icon-color: {iconColor}; --icon-size: {iconSize};"
+    style="--icon-color: {command.color}; --icon-size: 64pt;"
     on:click={handleClick}
 >
-    {iconLabel}
+    {command.label}
 </div>

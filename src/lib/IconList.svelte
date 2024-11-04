@@ -1,13 +1,15 @@
 <script lang="ts">
+  import type { Command } from '../types/commands';
   import LargeIcon from './LargeIcon.svelte';
 
   // props
-  export let ws: WebSocket; 
+  export let ws: WebSocket;
 
-  let icons = [
-      { label: "Icon 1", color: "blue" },
-      { label: "Icon 2", color: "green" },
-      { label: "Icon 3", color: "red" }
+  // https://robotjs.io/docs/syntax
+  let commands: Command[] = [
+      { label: "Save", color: "blue", key: "s", modifiers: ['CTRL'] },
+      { label: "Record", color: "red", key: "r", modifiers: ['CTRL'] },
+      { label: "Start/Stop", color: "green", key: "space" },
   ];
 </script>
 
@@ -20,7 +22,7 @@
 </style>
 
 <div class="icon-list">
-  {#each icons as icon}
-      <LargeIcon iconLabel={icon.label} iconColor={icon.color} {ws}/>
+  {#each commands as command}
+      <LargeIcon {command} {ws}/>
   {/each}
 </div>

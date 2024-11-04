@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const title = 'MyRemote';
-const reContainsCubase = /^cubase/i;
+const reContainsCubase = /cubase/i;
 
 const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT } );
 
@@ -43,7 +43,18 @@ async function getCubaseWindow () {
     return null;
 }
 
-async function sendShortcut () {
+function processMessage ( message ) {
+    console.log( "processMessage enter:", message );
+    try {
+        const command = JSON.parse( message );
+        console.log( "processMessage command:", command );
+        sendShortcut( command );
+    } catch ( e ) {
+        console.error( "processMessage error from message:", e );
+    }
+}
+
+async function sendShortcut ( command ) {
     try {
         const cubaseWindow = await getCubaseWindow();
         if ( !cubaseWindow ) {
@@ -51,16 +62,33 @@ async function sendShortcut () {
             return;
         }
 
-        robot.keyToggle( 'control', 'down' );
-        robot.keyTap( 's' );
-        robot.keyToggle( 'control', 'up' );
+        if ( command.modifiers.includes( 'CTRL' ) ) {
+            robot.keyToggle( 'control', 'down' );
+        }
+        if ( command.modifiers.includes( 'ALT' ) ) {
+            robot.keyToggle( 'alt', 'down' );
+        }
+        if ( command.modifiers.includes( 'SHIFT' ) ) {
+            robot.keyToggle( 'shift', 'down' );
+        }
 
-        console.log( "Sent Ctrl + S to Cubase." );
-    } catch ( error ) {
+        robot.keyTap( command.key );
+
+        if ( command.modifiers.includes( 'CTRL' ) ) {
+            robot.keyToggle( 'control', 'down' );
+        }
+        if ( command.modifiers.includes( 'ALT' ) ) {
+            robot.keyToggle( 'alt', 'down' );
+        }
+        if ( command.modifiers.includes( 'SHIFT' ) ) {
+            robot.keyToggle( 'shift', 'down' );
+        }
+
+        console.log( "Sent command." );
+    }
+
+    catch ( error ) {
         console.error( "Error sending key combination:", error );
     }
 }
 
-function processMessage ( message ) {
-    console.log( `Received message: ${ message }` );
-}
