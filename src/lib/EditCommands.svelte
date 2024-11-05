@@ -1,16 +1,20 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-
+  import { onDestroy } from "svelte";
   import { commandsStore } from "../stores/commandsStore";
   import type { Command, Modifier } from "../types/commands";
+  import "./EditCommands.css";
 
   let commands: Command[] = [];
   let icon = "";
   let text = "";
   let color = "";
   let key = "";
-  let modifiers: Modifier[] = [];
+  let selectedModifiers: Modifier[] = [];
 
+  // List of possible modifier options
+  const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
+
+  // Subscribe to commandsStore
   const unsubscribe = commandsStore.subscribe((value) => {
     commands = value;
   });
@@ -19,7 +23,13 @@
 
   function addCommand() {
     if (icon && text && color && key) {
-      const newCommand: Command = { icon, text, color, key, modifiers };
+      const newCommand: Command = {
+        icon,
+        text,
+        color,
+        key,
+        modifiers: selectedModifiers,
+      };
       commandsStore.update((currentCommands) => [
         ...currentCommands,
         newCommand,
@@ -30,7 +40,7 @@
       text = "";
       color = "";
       key = "";
-      modifiers = [];
+      selectedModifiers = [];
     } else {
       alert("Please fill in all fields!");
     }
@@ -43,6 +53,14 @@
       );
     }
   }
+
+  function toggleModifier(modifier: Modifier) {
+    if (selectedModifiers.includes(modifier)) {
+      selectedModifiers = selectedModifiers.filter((m) => m !== modifier);
+    } else {
+      selectedModifiers = [...selectedModifiers, modifier];
+    }
+  }
 </script>
 
 <table class="command-table">
@@ -52,9 +70,10 @@
       <th>Text</th>
       <th>Color</th>
       <th>Key</th>
-      <th>Modifiers</th>
+      {#each possibleModifiers as modifier}
+        <th class="modifier"> {modifier} </th>
+      {/each}
       <th>Actions</th>
-      <!-- New Actions Column -->
     </tr>
   </thead>
   <tbody>
@@ -62,90 +81,55 @@
       <tr>
         <td class="icon">{command.icon}</td>
         <td>{command.text}</td>
-        <td
-          ><span class="clr" style="background-color:{command.color}"
+        <td>
+          <span class="clr" style="background-color:{command.color}"
             >{command.color}</span
-          ></td
-        >
+          >
+        </td>
         <td class="key">{command.key}</td>
-        <td class="key"
-          >{command.modifiers ? command.modifiers.join(", ") : ""}</td
-        >
+        {#each possibleModifiers as modifier}
+          <td class="modifier">
+            <input
+              title={modifier}
+              type="checkbox"
+              checked={command.modifiers &&
+                command.modifiers.includes(modifier)}
+              disabled
+            />
+          </td>
+        {/each}
         <td>
           <button on:click={() => deleteCommand(index)}>Delete</button>
-          <!-- Delete Button -->
         </td>
       </tr>
     {/each}
 
     <tr>
-      <td class="centred icon"
-        ><input type="text" bind:value={icon} placeholder="Icon" /></td
-      >
+      <td class="centred icon">
+        <input class="icon" type="text" bind:value={icon} placeholder="Icon" />
+      </td>
       <td><input type="text" bind:value={text} placeholder="Text" /></td>
-      <td><input type="color" bind:value={color} placeholder="Color" /></td>
+      <td>
+        <span class="clr">
+          <input type="color" bind:value={color} placeholder="Color" />
+        </span>
+      </td>
       <td class="key"
         ><input type="text" bind:value={key} placeholder="Key" /></td
       >
-      <td>
-        <input
-          type="text"
-          bind:value={modifiers}
-          placeholder="Modifiers (comma separated)"
-        />
-      </td>
+      {#each possibleModifiers as modifier}
+        <td class="modifier">
+          <input
+            title={modifier}
+            type="checkbox"
+            checked={selectedModifiers.includes(modifier)}
+            on:change={() => toggleModifier(modifier)}
+          />
+        </td>
+      {/each}
       <td class="centred">
         <button class="add" on:click={addCommand}>Add</button>
       </td>
     </tr>
   </tbody>
 </table>
-
-<style>
-  .command-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .command-table th,
-  .command-table td {
-    padding: 4pt;
-    text-align: left;
-    vertical-align: middle;
-  }
-
-  .command-table td.icon {
-    width: 3em;
-  }
-  .command-table td .clr {
-    padding: 1pt 4pt;
-    text-transform: uppercase;
-    font-variant: small-caps;
-    font-size: small;
-  }
-
-  .command-table td.key {
-    font-family: "Courier New", Courier, monospace;
-  }
-
-  .command-table td.centred {
-    text-align: center;
-  }
-
-  .command-table input {
-    width: 100%;
-  }
-
-  .command-table button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 2pt;
-    cursor: pointer;
-    padding: 2pt 6pt;
-  }
-
-  .command-table button.add {
-    background-color: green;
-  }
-</style>

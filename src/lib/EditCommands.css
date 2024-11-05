@@ -1,0 +1,65 @@
+
+  .command-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .command-table th,
+  .command-table td {
+    padding: 4pt;
+    text-align: left;
+    vertical-align: bottom;
+  }
+  
+  .command-table th.modifier, 
+  .command-table td.modifier {
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    text-align: right;
+    padding-right: 1em;
+    width: 1em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    font-size: small;
+  }
+
+  .command-table .icon {
+    width: 3em;
+  }
+
+  .command-table td .clr {
+    padding: 1pt 4pt;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    font-size: small;
+  }
+
+  .command-table td.key {
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  .command-table td.centred {
+    text-align: center;
+  }
+
+  .command-table input {
+    width: 100%;
+  }
+
+  .command-table button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 2pt;
+    cursor: pointer;
+    padding: 2pt 6pt;
+  }
+
+  .command-table button.add {
+    background-color: green;
+  }
+
+  td label {
+    display: inline-block;
+    margin-right: 6px;
+  }
