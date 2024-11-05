@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { viteSingleFile } from 'vite-plugin-singlefile';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Define required environment variables
 const requiredEnvVars = ['VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE'] as const;
@@ -30,5 +33,8 @@ export default defineConfig({
     target: 'esnext',
     assetsInlineLimit: 100000000,
     outDir: 'dist',
+    rollupOptions: {
+      external: ['*.json'], // User-supplied config
+    },
   },
 });
