@@ -8,7 +8,9 @@
 
   let commands: Command[];
 
-  onMount(() => (commands = loadCommands()));
+  onMount(() => {
+    commands = loadCommands();
+  });
 </script>
 
 <section class="icon-list">

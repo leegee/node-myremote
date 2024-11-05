@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import IconList from "./lib/IconList.svelte";
+  import EditCommands from "./lib/EditCommands.svelte";
+  import Modal from "./lib/Modal.svelte";
 
   let ws: WebSocket;
   let isConnected: boolean = false;
@@ -62,6 +64,12 @@
 </script>
 
 <main>
+  <nav class="button-container">
+    <Modal buttonTitle="Edit" modalTitle="Edit Comamnds">
+      <EditCommands />
+    </Modal>
+  </nav>
+
   {#if isConnected}
     <IconList {ws} />
   {:else if connectionError}
@@ -79,3 +87,11 @@
     </p>
   {/if}
 </main>
+
+<style>
+  .button-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+</style>
