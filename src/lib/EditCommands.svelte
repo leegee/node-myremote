@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
-  import { loadCommands, saveCommands } from "./Commands";
+  import { commandsStore } from "../stores/commandsStore";
   import type { Command, Modifier } from "../types/commands";
 
   let commands: Command[] = [];
@@ -10,15 +10,20 @@
   let color = "";
   let key = "";
   let modifiers: Modifier[] = [];
-  const commandsJson = "[]";
 
-  onMount(() => (commands = loadCommands()));
+  const unsubscribe = commandsStore.subscribe((value) => {
+    commands = value;
+  });
+
+  onDestroy(unsubscribe);
 
   function addCommand() {
     if (icon && text && color && key) {
       const newCommand: Command = { icon, text, color, key, modifiers };
-      commands.push(newCommand);
-      saveCommands(commands);
+      commandsStore.update((currentCommands) => [
+        ...currentCommands,
+        newCommand,
+      ]);
 
       // Reset input fields
       icon = "";
@@ -30,26 +35,89 @@
       alert("Please fill in all fields!");
     }
   }
+
+  function deleteCommand(index: number) {
+    if (confirm("Are you sure you want to delete this command?")) {
+      commandsStore.update((currentCommands) =>
+        currentCommands.filter((_, i) => i !== index)
+      );
+    }
+  }
 </script>
 
-<div class="command-form">
-  <input type="text" bind:value={icon} placeholder="Icon" />
-  <input type="text" bind:value={text} placeholder="Text" />
-  <input type="text" bind:value={color} placeholder="Color" />
-  <input type="text" bind:value={key} placeholder="Key" />
-  <input
-    type="text"
-    bind:value={modifiers}
-    placeholder="Modifiers (comma separated)"
-  />
+<table class="command-table">
+  <thead>
+    <tr>
+      <th>Icon</th>
+      <th>Text</th>
+      <th>Color</th>
+      <th>Key</th>
+      <th>Modifiers</th>
+      <th>Actions</th>
+      <!-- New Actions Column -->
+    </tr>
+  </thead>
+  <tbody>
+    {#each commands as command, index}
+      <tr>
+        <td>{command.icon}</td>
+        <td>{command.text}</td>
+        <td>{command.color}</td>
+        <td>{command.key}</td>
+        <td>{command.modifiers ? command.modifiers.join(", ") : ""}</td>
+        <td>
+          <button on:click={() => deleteCommand(index)}>Delete</button>
+          <!-- Delete Button -->
+        </td>
+      </tr>
+    {/each}
 
-  <button on:click={addCommand}>Add Command</button>
-</div>
+    <tr>
+      <td><input type="text" bind:value={icon} placeholder="Icon" /></td>
+      <td><input type="text" bind:value={text} placeholder="Text" /></td>
+      <td><input type="text" bind:value={color} placeholder="Color" /></td>
+      <td><input type="text" bind:value={key} placeholder="Key" /></td>
+      <td>
+        <input
+          type="text"
+          bind:value={modifiers}
+          placeholder="Modifiers (comma separated)"
+        />
+      </td>
+      <td>
+        <button class="add" on:click={addCommand}>Add</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <style>
-  .command-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  .command-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .command-table th,
+  .command-table td {
+    padding: 4pt;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .command-table input {
+    width: 100%;
+  }
+
+  .command-table button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 2pt;
+    cursor: pointer;
+    padding: 2pt 6pt;
+  }
+
+  .command-table button.add {
+    background-color: green;
   }
 </style>

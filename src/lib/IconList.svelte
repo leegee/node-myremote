@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { loadCommands } from "./Commands";
+  import { onDestroy } from "svelte";
   import LargeIcon from "./LargeIcon.svelte";
+  import { commandsStore } from "../stores/commandsStore";
   import type { Command } from "../types/commands";
 
   export let ws: WebSocket;
 
   let commands: Command[];
 
-  onMount(() => {
-    commands = loadCommands();
+  const unsubscribe = commandsStore.subscribe((value) => {
+    commands = value;
   });
+
+  onDestroy(unsubscribe);
 </script>
 
 <section class="icon-list">

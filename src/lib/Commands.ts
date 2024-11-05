@@ -1,7 +1,7 @@
 import type { Command } from '../types/commands';
 import commandsJson from '../../commands.json';
 
-const LOCAL_STORAGE_KEY = 'commands';
+const LOCAL_STORAGE_KEY = 'remote_cmds';
 
 export function loadCommands() {
     console.log("Loading commands");
