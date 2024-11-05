@@ -8,6 +8,22 @@ Remote control Windows applications from a mobile device/web page.
     bun run build
     node src/taskbar-server.mjs
 
+System tray:
+
+![System Tray](./README/taskbar.png)
+
+Main interface:
+
+![Main](./README/main.png)
+
+Editor:
+
+![Editor](./README/editor.png)
+
+Editing:
+
+![Editing](./README/editing.png)
+
 ## Description
 
 Creates a Windows' system tray icon that can provide a URL for a webpage that 
