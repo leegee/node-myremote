@@ -11,6 +11,8 @@ import { windowManager } from 'node-window-manager';
 import dotenv from 'dotenv';
 import open from 'open';
 
+let TRAY;
+
 const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
     for ( const name of Object.keys( interfaces ) ) {
@@ -42,10 +44,9 @@ async function getCubaseWindow () {
 }
 
 function processMessage ( message ) {
-    console.log( "processMessage enter:", message );
     try {
         const command = JSON.parse( message );
-        console.log( "processMessage command:", command );
+        console.debug( "processMessage command:", command );
         sendShortcut( command );
     } catch ( e ) {
         console.error( "processMessage error from message:", e );
@@ -56,7 +57,8 @@ async function sendShortcut ( command ) {
     try {
         const cubaseWindow = await getCubaseWindow();
         if ( !cubaseWindow ) {
-            console.log( "No active Cubase window found." );
+            TRAY.notify( appTitle, 'Is Cubase running?' );
+            console.warn( "No active Cubase window found." );
             return;
         }
 
@@ -65,7 +67,7 @@ async function sendShortcut ( command ) {
 
         robot.keyTap( command.key, modifiers );
 
-        console.log( "Sent command." );
+        console.debug( "Sent command to Cubase." );
     }
 
     catch ( error ) {
@@ -105,33 +107,34 @@ const httpServer = http.createServer( ( _req, res ) => {
 
 
 Tray.create(
-    ( tray ) => {
+    ( _tray ) => {
+        TRAY = _tray;
         httpServer.listen( httpPort, '0.0.0.0', () => {
-            console.log( `Server running at ${ httpAddressLink }/` );
+            console.info( `Server running at ${ httpAddressLink }/` );
         } );
 
         const wss = new WebSocketServer( {
             port: wsPort
         } );
         wss.on( 'connection', ( ws ) => {
-            console.log( 'WS client connected' );
+            console.info( 'WS client connected' );
             // tray.notify( appTitle, 'Connected' );
             ws.on( 'message', processMessage );
             ws.on( 'close', () => {
-                console.log( 'Client disconnected' );
+                console.info( 'Client disconnected' );
             } );
         } );
 
-        tray.setMenu(
-            tray.item( appTitle, {
+        TRAY.setMenu(
+            TRAY.item( appTitle, {
                 bold: true,
                 action: () => open( httpAddressLink )
             } ),
-            tray.item( "Show", open( httpAddressLink ) ),
-            tray.separator(),
-            tray.item( "Quit", () => kill( tray, wss ) )
+            TRAY.item( "Show", open( httpAddressLink ) ),
+            TRAY.separator(),
+            TRAY.item( "Quit", () => kill( TRAY, wss ) )
         );
-        tray.setTitle( appTitle );
+        TRAY.setTitle( appTitle );
     }
 );
 
