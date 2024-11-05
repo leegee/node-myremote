@@ -1,13 +1,28 @@
 import { WebSocketServer } from 'ws';
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import { fileURLToPath } from 'url';
+
 import Tray from 'trayicon';
 import robot from 'robotjs';
 import { windowManager } from 'node-window-manager';
 import dotenv from 'dotenv';
+import open from 'open';
 
-dotenv.config();
-
-const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
-const reContainsCubase = /cubase/i;
+const getLocalIP = () => {
+    const interfaces = os.networkInterfaces();
+    for ( const name of Object.keys( interfaces ) ) {
+        for ( const net of interfaces[ name ] ) {
+            // 'IPv4' and internal address (localhost) filtering
+            if ( net.family === 'IPv4' && !net.internal ) {
+                return net.address;
+            }
+        }
+    }
+    return null; // Fallback if no external IPv4 is found
+};
 
 function kill ( tray, wss ) {
     tray.kill();
@@ -59,10 +74,39 @@ async function sendShortcut ( command ) {
 }
 
 
+dotenv.config();
+
+const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
+const reContainsCubase = /cubase/i;
+const wsPort = process.env.VITE_WS_PORT || 8223;
+const httpPort = process.env.VITE_HTTP_PORT || 8224;
+const address = 'http://' + getLocalIP() + ':' + httpPort;
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
+const distDir = path.join( __dirname, '..', 'dist' );
+
+console.log( address );
+
+
+const server = http.createServer( ( _req, res ) => {
+    fs.readFile( path.join( distDir, 'index.html' ), ( err, data ) => {
+        if ( err ) {
+            console.error( err );
+            res.statusCode = 404;
+            res.setHeader( 'Content-Type', 'text/plain' );
+            res.end( '404: Not Found' );
+        } else {
+            res.statusCode = 200;
+            res.setHeader( 'Content-Type', 'text/html' );
+            res.end( data );
+        }
+    } );
+} );
+
+
 Tray.create(
     ( tray ) => {
-
-        const wss = new WebSocketServer( { port: process.env.VITE_WS_PORT || 8223 } );
+        const wss = new WebSocketServer( { port: wsPort } );
         wss.on( 'connection', ( ws ) => {
             console.log( 'Client connected' );
             tray.notify( appTitle, 'Connected' );
@@ -72,8 +116,15 @@ Tray.create(
             } );
         } );
 
-        const quit = tray.item( "Quit " + appTitle, () => kill( tray, wss ) );
-        tray.setMenu( quit );
+        server.listen( httpPort, () => {
+            console.log( `Server running at http://localhost:${ httpPort }/` );
+        } );
+
+        tray.setMenu(
+            tray.item( appTitle, () => { } ),
+            tray.item( "Show", () => open( address ) ),
+            tray.item( "Quit", () => kill( tray, wss ) )
+        );
         tray.setTitle( appTitle );
     }
 );
