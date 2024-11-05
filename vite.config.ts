@@ -32,9 +32,6 @@ export default defineConfig({
   build: {
     target: 'esnext',
     assetsInlineLimit: 100000000,
-    outDir: 'dist',
-    rollupOptions: {
-      external: ['*.json'], // User-supplied config
-    },
+    outDir: 'dist'
   },
 });
