@@ -33,14 +33,18 @@ function kill ( tray, wss ) {
     wss.close();
 }
 
-async function getCubaseWindow () {
+async function getTargetAppWindow () {
     let rv = null;
     for ( const window of windowManager.getWindows() ) {
-        if ( reContainsCubase.test( window.path ) ) {
+        if ( reContainsTargetApp.test( window.path ) ) {
             window.bringToTop();
             rv = window;
             break;
         }
+    }
+
+    if ( rv === null ) {
+        console.warn( "No active window found." );
     }
     return rv;
 }
@@ -57,10 +61,9 @@ function processMessage ( message ) {
 
 async function sendKeyCombo ( command ) {
     try {
-        const cubaseWindow = await getCubaseWindow();
-        if ( !cubaseWindow ) {
-            TRAY.notify( appTitle, 'Is Cubase running?' );
-            console.warn( "No active Cubase window found." );
+        const targetAppWindow = await getTargetAppWindow();
+        if ( !targetAppWindow ) {
+            TRAY.notify( appTitle, 'Is your target app running?' );
             return;
         }
 
@@ -70,7 +73,7 @@ async function sendKeyCombo ( command ) {
 
         console.debug( "Sending", command.key, modifiers );
         robot.keyTap( command.key, modifiers );
-        console.debug( "Sent command to Cubase." );
+        console.debug( "Sent command to target app." );
     }
 
     catch ( error ) {
@@ -90,7 +93,7 @@ if ( missingEnvVars.length > 0 ) {
 const validModifiers = [ 'control', 'shift', 'alt', 'command' ];
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const regexp = process.env.VITE_APP_RE;
-const reContainsCubase = new RegExp( regexp, 'i' );
+const reContainsTargetApp = new RegExp( regexp, 'i' );
 const wsPort = process.env.VITE_WS_PORT || 8223;
 const httpPort = process.env.VITE_HTTP_PORT || 8224;
 const __filename = fileURLToPath( import.meta.url );
