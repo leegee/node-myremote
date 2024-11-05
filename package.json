@@ -1,8 +1,8 @@
 {
   "name": "node-myremote",
-  "description": "Testing the ability to send shortcuts to a Windows application from a tablet",
+  "description": "Send key combinations to a Windows application from a browser",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "bin": "src/systray-server.mjs",
   "scripts": {
