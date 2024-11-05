@@ -123,8 +123,12 @@ Tray.create(
         } );
 
         tray.setMenu(
-            tray.item( appTitle, () => { } ),
-            tray.item( "Show", () => open( httpAddressLink ) ),
+            tray.item( appTitle, {
+                bold: true,
+                action: () => open( httpAddressLink )
+            } ),
+            tray.item( "Show", open( httpAddressLink ) ),
+            tray.separator(),
             tray.item( "Quit", () => kill( tray, wss ) )
         );
         tray.setTitle( appTitle );
