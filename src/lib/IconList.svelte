@@ -1,12 +1,24 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import commands from "./Commands";
   import LargeIcon from "./LargeIcon.svelte";
 
   export let ws: WebSocket;
+
+  let actualCommands = commands;
+
+  onMount(() => {
+    try {
+      actualCommands =
+        JSON.parse(localStorage.getItem("commands") ?? "null") || commands;
+    } catch {
+      actualCommands = commands;
+    }
+  });
 </script>
 
 <section class="icon-list">
-  {#each commands as command}
+  {#each actualCommands as command}
     <LargeIcon {command} {ws} />
   {/each}
 </section>
