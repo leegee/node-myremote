@@ -47,13 +47,13 @@ function processMessage ( message ) {
     try {
         const command = JSON.parse( message );
         console.debug( "processMessage command:", command );
-        sendShortcut( command );
+        sendKeyCombo( command );
     } catch ( e ) {
         console.error( "processMessage error from message:", e );
     }
 }
 
-async function sendShortcut ( command ) {
+async function sendKeyCombo ( command ) {
     try {
         const cubaseWindow = await getCubaseWindow();
         if ( !cubaseWindow ) {
@@ -62,11 +62,12 @@ async function sendShortcut ( command ) {
             return;
         }
 
-        const modifiers = command.modifiers instanceof Array ?
-            command.modifiers.filter( 'control', 'shift', 'alt', 'command' ) : [];
+        const modifiers = Array.isArray( command.modifiers )
+            ? command.modifiers.filter( modifier => validModifiers.includes( modifier ) )
+            : [];
 
+        console.debug( "Sending", command.key, modifiers );
         robot.keyTap( command.key, modifiers );
-
         console.debug( "Sent command to Cubase." );
     }
 
@@ -78,6 +79,7 @@ async function sendShortcut ( command ) {
 
 dotenv.config();
 
+const validModifiers = [ 'control', 'shift', 'alt', 'command' ];
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const reContainsCubase = /cubase/i;
 const wsPort = process.env.VITE_WS_PORT || 8223;
