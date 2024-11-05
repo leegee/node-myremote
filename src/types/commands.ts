@@ -1,4 +1,4 @@
-export type Modifier = 'control' | 'shift' | 'alt' | 'comamnd';
+export type Modifier = 'control' | 'shift' | 'alt' | 'command';
 
 export interface Command {
     icon: string;
