@@ -130,7 +130,7 @@ Tray.create(
                 bold: true,
                 action: () => open( httpAddressLink )
             } ),
-            TRAY.item( "Show", open( httpAddressLink ) ),
+            TRAY.item( "Show", () => open( httpAddressLink ) ),
             TRAY.separator(),
             TRAY.item( "Quit", () => kill( TRAY, wss ) )
         );
