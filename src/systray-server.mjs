@@ -13,6 +13,8 @@ import open from 'open';
 
 let TRAY;
 
+const requiredEnvVars = [ 'VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE' ];
+
 const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
     for ( const name of Object.keys( interfaces ) ) {
@@ -78,6 +80,12 @@ async function sendKeyCombo ( command ) {
 
 
 dotenv.config();
+
+const missingEnvVars = requiredEnvVars.filter( varName => !process.env[ varName ] );
+if ( missingEnvVars.length > 0 ) {
+    console.error( `Missing required environment variables: ${ missingEnvVars.join( ', ' ) }` );
+    process.exit( 1 );
+}
 
 const validModifiers = [ 'control', 'shift', 'alt', 'command' ];
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
