@@ -1,39 +1,70 @@
+<!-- AddOrEditCommandRow.svelte -->
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { commandsStore } from "../stores/commandsStore";
-  import "./EditCommands.css";
   import type { Command, Modifier } from "../types/commands";
+  import "./EditCommands.css";
 
   export let possibleModifiers: Modifier[];
+  export let command: Command | null = null; // Command to edit
+  const dispatch = createEventDispatcher();
 
+  // Initialize input fields
   let icon = "";
   let text = "";
   let color = "";
   let key = "";
   let selectedModifiers: Modifier[] = [];
 
-  function addCommand() {
+  // If there's a command to edit, populate fields
+  if (command) {
+    icon = command.icon;
+    text = command.text;
+    color = command.color;
+    key = command.key;
+    selectedModifiers = command.modifiers || [];
+  }
+
+  function saveCommand() {
     if (icon && text && color && key) {
-      const newCommand: Command = {
+      const updatedCommand: Command = {
         icon,
         text,
         color,
         key,
         modifiers: selectedModifiers,
       };
-      commandsStore.update((currentCommands) => [
-        ...currentCommands,
-        newCommand,
-      ]);
+
+      if (command) {
+        // Update existing command
+        commandsStore.update((currentCommands) => {
+          const index = currentCommands.indexOf(command);
+          if (index !== -1) {
+            currentCommands[index] = updatedCommand;
+          }
+          return [...currentCommands];
+        });
+      } else {
+        // Add new command
+        commandsStore.update((currentCommands) => [
+          ...currentCommands,
+          updatedCommand,
+        ]);
+      }
 
       // Reset input fields
-      icon = "";
-      text = "";
-      color = "";
-      key = "";
-      selectedModifiers = [];
+      resetFields();
     } else {
       alert("Please fill in all fields!");
     }
+  }
+
+  function resetFields() {
+    icon = "";
+    text = "";
+    color = "";
+    key = "";
+    selectedModifiers = [];
   }
 
   function toggleModifier(modifier: Modifier) {
@@ -42,6 +73,10 @@
     } else {
       selectedModifiers = [...selectedModifiers, modifier];
     }
+  }
+
+  function cancelEdit() {
+    dispatch("cancel"); // Emit cancel event
   }
 </script>
 
@@ -68,6 +103,9 @@
     </td>
   {/each}
   <td class="centred">
-    <button class="add" on:click={addCommand}>Add</button>
+    <button class="add" on:click={saveCommand}>
+      {command ? "✔" : "🞥"}
+    </button>
+    <button on:click={cancelEdit}>🗙</button>
   </td>
 </tr>

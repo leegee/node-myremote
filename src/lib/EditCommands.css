@@ -47,12 +47,11 @@
   }
 
   .command-table button {
-    background-color: #ff4d4d;
-    color: white;
+    background-color: transparent;
     border: none;
-    border-radius: 2pt;
     cursor: pointer;
-    padding: 2pt 6pt;
+    padding: 2pt;
+    display: inline;
   }
 
   .command-table button.add {

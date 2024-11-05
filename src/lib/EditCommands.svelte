@@ -1,14 +1,15 @@
+<!-- EditCommands.svelte -->
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import AddCommandRow from "./AddCommandRow.svelte";
   import { commandsStore } from "../stores/commandsStore";
-  import "./EditCommands.css";
+  import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import type { Command, Modifier } from "../types/commands";
+  import "./EditCommands.css";
 
   let commands: Command[] = [];
   const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
+  let isEditingIndex: number | null = null; // Store the index of the command being edited
 
-  // Subscribe to the commands store
   const unsubscribe = commandsStore.subscribe((value) => {
     commands = value;
   });
@@ -21,6 +22,14 @@
         currentCommands.filter((_, i) => i !== index)
       );
     }
+  }
+
+  function editCommand(index: number) {
+    isEditingIndex = index; // Set the index of the command to edit
+  }
+
+  function clearEditing() {
+    isEditingIndex = null; // Clear the editing index
   }
 </script>
 
@@ -39,30 +48,45 @@
   </thead>
   <tbody>
     {#each commands as command, index}
-      <tr>
-        <td class="icon">{command.icon}</td>
-        <td>{command.text}</td>
-        <td
-          ><span class="clr" style="background-color:{command.color}"
-            >{command.color}</span
-          ></td
-        >
-        <td class="key">{command.key}</td>
-        {#each possibleModifiers as modifier}
-          <td class="modifier">
-            <input
-              type="checkbox"
-              checked={command.modifiers?.includes(modifier)}
-              disabled
-            />
+      {#if isEditingIndex === index}
+        <!-- Render the editor for the command being edited -->
+        <AddOrEditCommandRow
+          {possibleModifiers}
+          {command}
+          on:cancel={clearEditing}
+        />
+      {:else}
+        <tr>
+          <td class="icon">{command.icon}</td>
+          <td>{command.text}</td>
+          <td>
+            <span class="clr" style="background-color:{command.color}"
+              >{command.color}</span
+            >
           </td>
-        {/each}
-        <td>
-          <button on:click={() => deleteCommand(index)}>Delete</button>
-        </td>
-      </tr>
+          <td class="key">{command.key}</td>
+          {#each possibleModifiers as modifier}
+            <td class="modifier">
+              <input
+                type="checkbox"
+                checked={command.modifiers?.includes(modifier)}
+                disabled
+              />
+            </td>
+          {/each}
+          <td>
+            <button on:click={() => editCommand(index)}>🖉</button>
+            <button on:click={() => deleteCommand(index)}>🗑</button>
+          </td>
+        </tr>
+      {/if}
     {/each}
+
     <!-- Add Command Row -->
-    <AddCommandRow {possibleModifiers} />
+    <AddOrEditCommandRow
+      {possibleModifiers}
+      command={null}
+      on:cancel={clearEditing}
+    />
   </tbody>
 </table>
