@@ -81,7 +81,8 @@ dotenv.config();
 
 const validModifiers = [ 'control', 'shift', 'alt', 'command' ];
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
-const reContainsCubase = /cubase/i;
+const regexp = process.env.VITE_APP_RE;
+const reContainsCubase = new RegExp( regexp, 'i' );
 const wsPort = process.env.VITE_WS_PORT || 8223;
 const httpPort = process.env.VITE_HTTP_PORT || 8224;
 const __filename = fileURLToPath( import.meta.url );
