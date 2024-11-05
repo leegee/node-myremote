@@ -18,8 +18,10 @@
 {#if isOpen}
   <dialog open class="modal">
     <header>
-      <h2>{modalTitle}</h2>
-      <button on:click={closeModal} aria-label="Close">✖</button>
+      <h2>
+        <button on:click={closeModal} aria-label="Back" title="Back">﹤</button>
+        {modalTitle}
+      </h2>
     </header>
     <div class="modal-content">
       <slot></slot>
@@ -49,7 +51,7 @@
     align-items: center;
     padding-bottom: 0.5em;
     margin-bottom: 0.5em;
-    width: 100%;
+    width: calc(100vw - 6em);
   }
 
   h2 {
@@ -57,15 +59,17 @@
     margin: 0;
   }
 
-  button[aria-label="Close"] {
-    margin-left: auto;
+  button[aria-label="Back"] {
     background: none;
     border: none;
-    font-size: 1.2em;
+    padding: 0;
+    margin: 0;
+    margin-right: 0.25em;
     cursor: pointer;
+    font-weight: bolder;
   }
 
   .modal-content {
-    padding: 10px 0;
+    padding: 1em 0;
   }
 </style>
