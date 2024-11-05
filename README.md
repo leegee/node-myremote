@@ -1,6 +1,6 @@
 # node-myremote
 
-Exploring sending key commands to Cubase using scripting tools.
+Remote control Windows applications from a mobile device/web page.
 
 ## Synopsis
 
@@ -11,13 +11,13 @@ Exploring sending key commands to Cubase using scripting tools.
 ## Description
 
 Creates a Windows' system tray icon that can provide a URL for a webpage that 
-can send key commands to Cubase.
+can send key commands to Cubase, or any other Windows application.
 
 This would work for any program, by updating a regexp.
 
     Sytem tray HTTP server -> HTTP document
     HTTP document -> System Tray WS server 
-    System Tray WS server -> Cubase
+    System Tray WS server -> Key combination -> Target App
 
 ## Resources
 

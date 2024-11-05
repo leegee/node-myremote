@@ -1,6 +1,6 @@
 {
   "name": "node-myremote",
-  "description": "Testing the ability to send shortcuts to Cubase from a tablet",
+  "description": "Testing the ability to send shortcuts to a Windows application from a tablet",
   "private": true,
   "version": "0.0.0",
   "type": "module",
