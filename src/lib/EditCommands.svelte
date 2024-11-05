@@ -60,11 +60,17 @@
   <tbody>
     {#each commands as command, index}
       <tr>
-        <td>{command.icon}</td>
+        <td class="icon">{command.icon}</td>
         <td>{command.text}</td>
-        <td>{command.color}</td>
-        <td>{command.key}</td>
-        <td>{command.modifiers ? command.modifiers.join(", ") : ""}</td>
+        <td
+          ><span class="clr" style="background-color:{command.color}"
+            >{command.color}</span
+          ></td
+        >
+        <td class="key">{command.key}</td>
+        <td class="key"
+          >{command.modifiers ? command.modifiers.join(", ") : ""}</td
+        >
         <td>
           <button on:click={() => deleteCommand(index)}>Delete</button>
           <!-- Delete Button -->
@@ -73,10 +79,14 @@
     {/each}
 
     <tr>
-      <td><input type="text" bind:value={icon} placeholder="Icon" /></td>
+      <td class="centred icon"
+        ><input type="text" bind:value={icon} placeholder="Icon" /></td
+      >
       <td><input type="text" bind:value={text} placeholder="Text" /></td>
-      <td><input type="text" bind:value={color} placeholder="Color" /></td>
-      <td><input type="text" bind:value={key} placeholder="Key" /></td>
+      <td><input type="color" bind:value={color} placeholder="Color" /></td>
+      <td class="key"
+        ><input type="text" bind:value={key} placeholder="Key" /></td
+      >
       <td>
         <input
           type="text"
@@ -84,7 +94,7 @@
           placeholder="Modifiers (comma separated)"
         />
       </td>
-      <td>
+      <td class="centred">
         <button class="add" on:click={addCommand}>Add</button>
       </td>
     </tr>
@@ -102,6 +112,24 @@
     padding: 4pt;
     text-align: left;
     vertical-align: middle;
+  }
+
+  .command-table td.icon {
+    width: 3em;
+  }
+  .command-table td .clr {
+    padding: 1pt 4pt;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    font-size: small;
+  }
+
+  .command-table td.key {
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  .command-table td.centred {
+    text-align: center;
   }
 
   .command-table input {
