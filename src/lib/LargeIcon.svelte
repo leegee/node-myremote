@@ -46,7 +46,6 @@
     border-radius: 50%;
     border: 1pt solid transparent;
     padding: 0;
-    padding-bottom: 0.15em;
     cursor: pointer;
     transition:
       border-color 0.25s,
