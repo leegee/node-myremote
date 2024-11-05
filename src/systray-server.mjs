@@ -80,15 +80,15 @@ const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const reContainsCubase = /cubase/i;
 const wsPort = process.env.VITE_WS_PORT || 8223;
 const httpPort = process.env.VITE_HTTP_PORT || 8224;
-const address = 'http://' + getLocalIP() + ':' + httpPort;
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 const distDir = path.join( __dirname, '..', 'dist' );
+const wsAddress = 'ws://' + getLocalIP() + ':' + wsPort;
+const httpAddressLink = 'http://' + getLocalIP() + ':' + httpPort + '?' + encodeURIComponent( wsAddress );
 
-console.log( address );
+console.log( httpAddressLink );
 
-
-const server = http.createServer( ( _req, res ) => {
+const httpServer = http.createServer( ( _req, res ) => {
     fs.readFile( path.join( distDir, 'index.html' ), ( err, data ) => {
         if ( err ) {
             console.error( err );
@@ -106,23 +106,25 @@ const server = http.createServer( ( _req, res ) => {
 
 Tray.create(
     ( tray ) => {
-        const wss = new WebSocketServer( { port: wsPort } );
+        httpServer.listen( httpPort, '0.0.0.0', () => {
+            console.log( `Server running at ${ httpAddressLink }/` );
+        } );
+
+        const wss = new WebSocketServer( {
+            port: wsPort
+        } );
         wss.on( 'connection', ( ws ) => {
-            console.log( 'Client connected' );
-            tray.notify( appTitle, 'Connected' );
+            console.log( 'WS client connected' );
+            // tray.notify( appTitle, 'Connected' );
             ws.on( 'message', processMessage );
             ws.on( 'close', () => {
                 console.log( 'Client disconnected' );
             } );
         } );
 
-        server.listen( httpPort, () => {
-            console.log( `Server running at http://localhost:${ httpPort }/` );
-        } );
-
         tray.setMenu(
             tray.item( appTitle, () => { } ),
-            tray.item( "Show", () => open( address ) ),
+            tray.item( "Show", () => open( httpAddressLink ) ),
             tray.item( "Quit", () => kill( tray, wss ) )
         );
         tray.setTitle( appTitle );

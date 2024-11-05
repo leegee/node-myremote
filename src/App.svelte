@@ -8,9 +8,9 @@
 
   function initWebSocket() {
     return new Promise<WebSocket>((resolve, reject) => {
-      const url = "ws://localhost:" + import.meta.env.VITE_WS_PORT;
-      const wsInstance = new WebSocket(url);
+      const url = decodeURIComponent(window.location.search.substring(1));
       console.info("Connecting to", url);
+      const wsInstance = new WebSocket(url);
 
       wsInstance.onopen = () => {
         console.log("WebSocket connection opened");
@@ -18,6 +18,7 @@
         resolve(wsInstance);
       };
 
+      // noop
       wsInstance.onmessage = (event) => {
         console.log(
           "Message from server:",
