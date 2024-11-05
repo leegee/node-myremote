@@ -2,15 +2,22 @@
 
 Exploring sending key commands to Cubase using scripting tools.
 
+## Synopsis
+
     npm i                             # bun dislikes some deps
+    bun run build
     node src/taskbar-server.mjs
-    bun run dev
 
-## Limitations
+## Description
 
-* The program to be controlled must have 'Cubase' in its path.
-* The Cubase window will be left in 'always on top mode.'
+Creates a Windows' system tray icon that can provide a URL for a webpage that 
+can send key commands to Cubase.
 
+This would work for any program, by updating a regexp.
+
+    Sytem tray HTTP server -> HTTP document
+    HTTP document -> System Tray WS server 
+    System Tray WS server -> Cubase
 
 ## Resources
 
