@@ -5,7 +5,7 @@
   import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import type { Command, Modifier } from "../types/commands";
   import "./EditCommands.css";
-  import { setCommandsToDefault } from "./Commands";
+  import { downloadCommandsJson, setCommandsToDefault } from "./Commands";
 
   let commands: Command[] = [];
   const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
@@ -99,4 +99,8 @@
 
 <nav class="toolbar">
   <button on:click={handleResetToDefaults}> Reset to defaults. </button>
+
+  <button on:click={downloadCommandsJson}>Download</button>
+
+  <!-- <button on:click={downloadCommandsJson}>Load</button> -->
 </nav>

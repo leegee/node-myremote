@@ -25,3 +25,14 @@ export function loadCommands() {
 export function saveCommands(commands: Command[]) {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(commands));
 }
+
+export function downloadCommandsJson() {
+    const commands = loadCommands();
+    const blob = new Blob([JSON.stringify(commands, null, 2)], { type: 'application/json' });
+
+    // Create a link element to trigger the download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'commands.json';
+    link.click();
+}
