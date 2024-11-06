@@ -32,13 +32,13 @@ can send key commands to Cubase, or any other Windows application.
 Key commands can be added and edited, are preserved between page loads, 
 and can also be saved to and loaded from file.
 
-To re-arrange commands, drag the table rows.
-
-This would work for any program, by updating a regexp.
+To re-arrange commands, drag the icons or table rows.
 
     Sytem tray HTTP server -> HTTP document
     HTTP document -> System Tray WS server 
     System Tray WS server -> Key combination -> Target App
+
+This would work for any program, by updating the regex in the `.env`.
 
 ## Resources
 
