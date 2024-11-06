@@ -16,33 +16,46 @@
 <button on:click={openModal}>{buttonTitle}</button>
 
 {#if isOpen}
-  <dialog open class="modal">
-    <header>
-      <h2>
-        <button on:click={closeModal} aria-label="Back" title="Back">﹤</button>
-        {modalTitle}
-      </h2>
-    </header>
-    <div class="modal-content">
-      <slot></slot>
-    </div>
-  </dialog>
+  <aside class="mask">
+    <dialog open class="modal">
+      <header>
+        <h2>
+          <button on:click={closeModal} aria-label="Back" title="Back"
+            >﹤</button
+          >
+          {modalTitle}
+        </h2>
+      </header>
+      <div class="modal-content">
+        <slot></slot>
+      </div>
+    </dialog>
+  </aside>
 {/if}
 
 <style>
-  dialog {
+  .mask {
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(100vw - 2em);
-    padding: 2em;
+    width: 100vw;
     height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal {
+    padding: 2em;
     border: none;
     border-radius: 8px;
+    background-color: navy;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: auto;
   }
 
   header {
@@ -51,7 +64,7 @@
     align-items: center;
     padding-bottom: 0.5em;
     margin-bottom: 0.5em;
-    width: calc(100vw - 6em);
+    min-width: 40vw;
   }
 
   h2 {
