@@ -3,11 +3,11 @@
   import LargeIcon from "./LargeIcon.svelte";
   import { commandsStore } from "../stores/commandsStore";
   import type { Command } from "../types/commands";
+  import { setupDragAndDrop } from "./dragDrop";
 
   export let ws: WebSocket;
 
-  let commands: Command[];
-  let draggedIndex: number | null = null;
+  let commands: Command[] = [];
 
   const unsubscribe = commandsStore.subscribe((value) => {
     commands = value;
@@ -15,35 +15,8 @@
 
   onDestroy(unsubscribe);
 
-  // Handle the start of drag event
-  function handleDragStart(index: number) {
-    draggedIndex = index;
-    document.body.style.cursor = "move"; // Optional, gives feedback when dragging
-  }
-
-  // Handle the end of drag event
-  function handleDragEnd() {
-    draggedIndex = null;
-    document.body.style.cursor = "default";
-  }
-
-  // Handle drag over to allow dropping
-  function handleDragOver(event: DragEvent) {
-    event.preventDefault(); // Required to allow dropping
-  }
-
-  // Handle the drop event to reorder the items
-  function handleDrop(index: number) {
-    if (draggedIndex !== null && draggedIndex !== index) {
-      const newCommands = [...commands];
-      const draggedCommand = newCommands[draggedIndex];
-      newCommands.splice(draggedIndex, 1);
-      newCommands.splice(index, 0, draggedCommand);
-
-      // Update the store with the new command order
-      commandsStore.set(newCommands);
-    }
-  }
+  const { handleDragStart, handleDragOver, handleDrop, handleDragEnd } =
+    setupDragAndDrop(commands, commandsStore);
 </script>
 
 <section class="icon-list">
@@ -54,7 +27,7 @@
       on:dragstart={() => handleDragStart(index)}
       on:dragend={handleDragEnd}
       on:dragover={handleDragOver}
-      on:drop={() => handleDrop(index)}
+      on:drop={(e) => handleDrop(index, e)}
     >
       <LargeIcon {command} {ws} />
     </div>
@@ -72,8 +45,7 @@
     align-items: center;
   }
 
-  /* Optional: Highlight the icon being dragged */
-  .dragging {
+  /* .dragging {
     opacity: 0.5;
-  }
+  } */
 </style>

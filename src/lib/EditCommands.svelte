@@ -3,6 +3,7 @@
   import type { Command, Modifier } from "../types/commands";
   import "./EditCommands.css";
   import { commandsStore } from "../stores/commandsStore";
+  import { setupDragAndDrop } from "./dragDrop";
   import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import LoadCommandsFromFile from "./LoadCommandsFromFile.svelte";
   import SaveCommandsToFile from "./SaveCommandsToFile.svelte";
@@ -19,6 +20,9 @@
 
   onDestroy(unsubscribe);
 
+  const { handleDragStart, handleDragOver, handleDrop, handleDragEnd } =
+    setupDragAndDrop(commands, commandsStore);
+
   function deleteCommand(index: number) {
     if (confirm("Are you sure you want to delete this command?")) {
       commandsStore.update((currentCommands) =>
@@ -33,30 +37,6 @@
 
   function clearEditing() {
     commandEdidintIndex = null;
-  }
-
-  function handleDragStart(index: number) {
-    draggedIndex = index;
-    document.body.style.cursor = "move";
-  }
-
-  function handleDragEnd() {
-    draggedIndex = null;
-    document.body.style.cursor = "default";
-  }
-
-  function handleDragOver(event: DragEvent) {
-    event.preventDefault(); // Required to allow dropping
-  }
-
-  function handleDrop(index: number) {
-    if (draggedIndex !== null && draggedIndex !== index) {
-      const newCommands = [...commands];
-      const draggedCommand = newCommands[draggedIndex];
-      newCommands.splice(draggedIndex, 1);
-      newCommands.splice(index, 0, draggedCommand);
-      commandsStore.set(newCommands);
-    }
   }
 </script>
 
@@ -88,7 +68,7 @@
           on:dragstart={() => handleDragStart(index)}
           on:dragend={handleDragEnd}
           on:dragover={handleDragOver}
-          on:drop={() => handleDrop(index)}
+          on:drop={(e) => handleDrop(index, e)}
         >
           <td class="icon">{command.icon}</td>
           <td>{command.text}</td>
