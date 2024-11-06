@@ -16,5 +16,7 @@
   { "icon": "▶", "text": "Play", "color": "#00AA00", "key": "space" },
   { "icon": "▮", "text": "Pause", "color": "#FFA500", "key": "numpad_0" },
   { "icon": "[", "text": "Left locator", "color": "#FFA500", "key": "home" },
-  { "icon": "]", "text": "Right locator", "color": "#FFA500", "key": "end" }
+  { "icon": "]", "text": "Right locator", "color": "#FFA500", "key": "end" },
+  { "icon": "⬇", "text": "Down", "color": "#FFA500", "key": "down" },
+  { "icon": "⬆", "text": "Up", "color": "#FFA500", "key": "up" }
 ]
