@@ -1,4 +1,3 @@
-<!-- EditCommands.svelte -->
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Command, Modifier } from "../types/commands";
@@ -10,9 +9,9 @@
   import ResetCommands from "./ResetCommands.svelte";
 
   let commands: Command[] = [];
-
-  const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
+  let draggedIndex: number | null = null;
   let commandEdidintIndex: number | null = null;
+  const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
 
   const unsubscribe = commandsStore.subscribe((value) => {
     commands = value;
@@ -34,6 +33,30 @@
 
   function clearEditing() {
     commandEdidintIndex = null;
+  }
+
+  function handleDragStart(index: number) {
+    draggedIndex = index;
+    document.body.style.cursor = "move";
+  }
+
+  function handleDragEnd() {
+    draggedIndex = null;
+    document.body.style.cursor = "default";
+  }
+
+  function handleDragOver(event: DragEvent) {
+    event.preventDefault(); // Required to allow dropping
+  }
+
+  function handleDrop(index: number) {
+    if (draggedIndex !== null && draggedIndex !== index) {
+      const newCommands = [...commands];
+      const draggedCommand = newCommands[draggedIndex];
+      newCommands.splice(draggedIndex, 1);
+      newCommands.splice(index, 0, draggedCommand);
+      commandsStore.set(newCommands);
+    }
   }
 </script>
 
@@ -60,7 +83,13 @@
           on:cancel={clearEditing}
         />
       {:else}
-        <tr>
+        <tr
+          draggable="true"
+          on:dragstart={() => handleDragStart(index)}
+          on:dragend={handleDragEnd}
+          on:dragover={handleDragOver}
+          on:drop={() => handleDrop(index)}
+        >
           <td class="icon">{command.icon}</td>
           <td>{command.text}</td>
           <td>

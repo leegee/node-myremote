@@ -32,6 +32,8 @@ can send key commands to Cubase, or any other Windows application.
 Key commands can be added and edited, are preserved between page loads, 
 and can also be saved to and loaded from file.
 
+To re-arrange commands, drag the table rows.
+
 This would work for any program, by updating a regexp.
 
     Sytem tray HTTP server -> HTTP document
