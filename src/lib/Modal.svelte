@@ -49,27 +49,28 @@
   .modal {
     padding: 2em;
     border: none;
-    border-radius: 8px;
-    background-color: navy;
+    border-radius: 0.5em;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: auto;
+    max-width: 45em;
   }
 
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 0.5em;
-    margin-bottom: 0.5em;
-    min-width: 40vw;
+    width: 100%;
+    position: relative;
+    left: -1.5em;
   }
 
   h2 {
     font-size: 1.2em;
     margin: 0;
+    padding: 0;
   }
 
   button[aria-label="Back"] {
@@ -77,7 +78,7 @@
     border: none;
     padding: 0;
     margin: 0;
-    margin-right: 0.25em;
+    margin-right: 0.5em;
     cursor: pointer;
     font-weight: bolder;
   }

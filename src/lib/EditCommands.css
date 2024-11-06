@@ -4,6 +4,10 @@
     border-collapse: collapse;
   }
 
+  .command-table tr {
+    vertical-align: middle;
+  }
+
   .command-table th,
   .command-table td {
     padding: 4pt;
@@ -13,15 +17,18 @@
   
   .command-table th.modifier, 
   .command-table td.modifier {
+    width: 1em;
+  }
+  
+  .command-table th.modifier{
+    text-transform: uppercase;
+    font-variant: small-caps;
+    font-size: smaller;
     white-space: nowrap;
     writing-mode: vertical-rl;
     text-align: right;
     padding-right: 1em;
-    width: 1em;
-    text-transform: uppercase;
-    font-variant: small-caps;
-    font-size: small;
-  }
+}
 
   .command-table .icon {
     width: 3em;
@@ -44,6 +51,8 @@
 
   .command-table input {
     width: 100%;
+    padding: 0;
+    margin: 0;
   }
 
   .command-table button {
@@ -52,10 +61,6 @@
     cursor: pointer;
     padding: 2pt;
     display: inline;
-  }
-
-  .command-table button.add {
-    background-color: green;
   }
 
   td label {

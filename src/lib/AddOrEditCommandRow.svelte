@@ -76,7 +76,7 @@
   }
 
   function cancelEdit() {
-    dispatch("cancel"); // Emit cancel event
+    dispatch("cancel");
   }
 </script>
 
@@ -84,17 +84,17 @@
   <td class="centred icon">
     <input type="text" bind:value={icon} placeholder="Icon" />
   </td>
-  <td><input type="text" bind:value={text} placeholder="Text" /></td>
   <td>
-    <span class="clr">
-      <input type="color" bind:value={color} />
-    </span>
+    <input type="text" bind:value={text} placeholder="Text" />
+  </td>
+  <td>
+    <input type="color" bind:value={color} />
   </td>
   <td class="key">
     <input type="text" bind:value={key} placeholder="Key" />
   </td>
   {#each possibleModifiers as modifier}
-    <td>
+    <td class="modifier">
       <input
         type="checkbox"
         checked={selectedModifiers.includes(modifier)}
@@ -102,7 +102,7 @@
       />
     </td>
   {/each}
-  <td class="centred">
+  <td>
     <button class="add" on:click={saveCommand}>
       {command ? "✔" : "🞥"}
     </button>
