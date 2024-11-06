@@ -18,8 +18,13 @@
   { "icon": "[", "text": "Left locator", "color": "#FFA500", "key": "home" },
   { "icon": "]", "text": "Right locator", "color": "#FFA500", "key": "end" },
   { "linebreak": true },
-  { "icon": "🡇", "text": "Down", "color": "#FFA500", "key": "down" },
-  { "icon": "🡅", "text": "Up", "color": "#FFA500", "key": "up" },
-  { "icon": "🡄", "text": "Left", "color": "#FFA500", "key": "left" },
-  { "icon": "🡆", "text": "Right", "color": "#FFA500", "key": "right" }
+  { "icon": "↓", "text": "Down", "color": "#FFA500", "key": "down" },
+  { "icon": "↑", "text": "Up", "color": "#FFA500", "key": "up" },
+  { "icon": "←", "text": "Left", "color": "#FFA500", "key": "left" },
+  { "icon": "→", "text": "Right", "color": "#FFA500", "key": "right" }
+  { "linebreak": true },
+  { "icon": "🡇", "text": "Select Down", "color": "#FFA500", "key": "down", "modifiers": ["shift"] },
+  { "icon": "🡅", "text": "Select Up", "color": "#FFA500", "key": "up", "modifiers": ["shift"] },
+  { "icon": "🡄", "text": "Select Left", "color": "#FFA500", "key": "left", "modifiers": ["shift"] },
+  { "icon": "🡆", "text": "Select Right", "color": "#FFA500", "key": "right", "modifiers": ["shift"] },
 ]
