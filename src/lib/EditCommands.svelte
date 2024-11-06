@@ -31,6 +31,14 @@
     }
   }
 
+  function insertLinebreak(index: number) {
+    commandsStore.update((currentCommands) => {
+      const newCommands = [...currentCommands];
+      newCommands.splice(index + 1, 0, { linebreak: true });
+      return newCommands;
+    });
+  }
+
   function editCommand(index: number) {
     commandEdidintIndex = index;
   }
@@ -70,28 +78,41 @@
           on:dragover={handleDragOver}
           on:drop={(e) => handleDrop(index, e)}
         >
-          <td class="icon">{command.icon}</td>
-          <td>{command.text}</td>
-          <td>
-            <span class="clr" style="background-color:{command.color}"
-              >{command.color}</span
-            >
-          </td>
-          <td class="key">{command.key}</td>
-          {#each possibleModifiers as modifier}
-            <td class="modifier">
-              <input
-                type="checkbox"
-                checked={command.modifiers?.includes(modifier)}
-                disabled
-              />
+          {#if "linebreak" in command}
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            {#each possibleModifiers as modifier}
+              <td></td>
+            {/each}
+          {:else}
+            <td class="icon">{command.icon}</td>
+            <td>{command.text}</td>
+            <td>
+              <span class="clr" style="background-color:{command.color}"
+                >{command.color}</span
+              >
             </td>
-          {/each}
+            <td class="key">{command.key}</td>
+            {#each possibleModifiers as modifier}
+              <td class="modifier">
+                <input
+                  type="checkbox"
+                  checked={command.modifiers?.includes(modifier)}
+                  disabled
+                />
+              </td>
+            {/each}
+          {/if}
           <td>
             <button on:click={() => editCommand(index)}>🖉</button>
           </td>
           <td>
             <button on:click={() => deleteCommand(index)}>🗑</button>
+          </td>
+          <td>
+            <button on:click={() => insertLinebreak(index)}>↲</button>
           </td>
         </tr>
       {/if}

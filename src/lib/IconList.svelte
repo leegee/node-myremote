@@ -23,13 +23,16 @@
   {#each commands as command, index}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
+      class:line-break={"linebreak" in command}
       draggable="true"
       on:dragstart={() => handleDragStart(index)}
       on:dragend={handleDragEnd}
       on:dragover={handleDragOver}
       on:drop={(e) => handleDrop(index, e)}
     >
-      <LargeIcon {command} {ws} />
+      {#if "key" in command}
+        <LargeIcon {command} {ws} />
+      {/if}
     </div>
   {/each}
 </section>
@@ -45,7 +48,14 @@
     align-items: center;
   }
 
-  /* .dragging {
-    opacity: 0.5;
-  } */
+  .line-break {
+    width: 100%;
+    height: 1pt;
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    margin: 0.25em;
+    display: block;
+    content: "";
+  }
 </style>

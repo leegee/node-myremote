@@ -17,6 +17,7 @@
   { "icon": "⏸", "text": "Pause", "color": "#FFA500", "key": "numpad_0" },
   { "icon": "[", "text": "Left locator", "color": "#FFA500", "key": "home" },
   { "icon": "]", "text": "Right locator", "color": "#FFA500", "key": "end" },
+  { "linebreak": true },
   { "icon": "🡇", "text": "Down", "color": "#FFA500", "key": "down" },
   { "icon": "🡅", "text": "Up", "color": "#FFA500", "key": "up" },
   { "icon": "🡄", "text": "Left", "color": "#FFA500", "key": "left" },

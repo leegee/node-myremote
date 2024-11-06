@@ -6,7 +6,7 @@
   "type": "module",
   "bin": "src/systray-server.mjs",
   "scripts": {
-    "start": "node src/taskbar-server.mjs",
+    "start": "node src/systray-server.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

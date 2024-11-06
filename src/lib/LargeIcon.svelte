@@ -14,15 +14,17 @@
   }
 </script>
 
-<button
-  title={command.text}
-  class="icon"
-  style="--icon-color: {command.color}; --icon-size: 64pt;"
-  on:click={handleClick}
->
-  <div class="icon">{command.icon}</div>
-  <div class="text">{command.text}</div>
-</button>
+{#if "text" in command}
+  <button
+    title={command.text}
+    class="icon"
+    style="--icon-color: {command.color}; --icon-size: 64pt;"
+    on:click={handleClick}
+  >
+    <div class="icon">{command.icon}</div>
+    <div class="text">{command.text}</div>
+  </button>
+{/if}
 
 <style>
   button {

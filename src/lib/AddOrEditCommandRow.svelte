@@ -17,7 +17,7 @@
   let selectedModifiers: Modifier[] = [];
 
   // If there's a command to edit, populate fields
-  if (command) {
+  if (command && "key" in command) {
     icon = command.icon;
     text = command.text;
     color = command.color;
