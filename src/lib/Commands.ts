@@ -31,10 +31,11 @@ export function downloadCommandsJson() {
     const blob = new Blob([JSON.stringify(commands, null, 2)], { type: 'application/json' });
 
     // Create a link element to trigger the download
-    const link = document.createElement('a');
+    let link: HTMLAnchorElement | null = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'commands.json';
     link.click();
+    link = null;
 }
 
 
