@@ -12,7 +12,6 @@
   .command-table td {
     padding: 4pt;
     text-align: left;
-    vertical-align: bottom;
   }
   
   .command-table th.modifier, 
