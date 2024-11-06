@@ -47,7 +47,8 @@
       {#each possibleModifiers as modifier}
         <th class="modifier"> {modifier} </th>
       {/each}
-      <th>Actions</th>
+      <th class="modifier">Edit</th>
+      <th class="modifier">Delete</th>
     </tr>
   </thead>
   <tbody>
@@ -79,6 +80,8 @@
           {/each}
           <td>
             <button on:click={() => editCommand(index)}>🖉</button>
+          </td>
+          <td>
             <button on:click={() => deleteCommand(index)}>🗑</button>
           </td>
         </tr>

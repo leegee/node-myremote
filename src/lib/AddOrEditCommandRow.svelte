@@ -106,6 +106,8 @@
     <button class="add" on:click={saveCommand}>
       {command ? "✔" : "🞥"}
     </button>
+  </td>
+  <td>
     <button on:click={cancelEdit}>🗙</button>
   </td>
 </tr>
