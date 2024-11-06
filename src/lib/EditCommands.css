@@ -68,7 +68,9 @@
   }
 
   .toolbar {
-    margin-top: 1em;
     display: flex;
+    justify-content: center; 
+    margin-top: 1em;
+    gap: 1em;
   }
   

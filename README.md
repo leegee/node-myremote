@@ -29,6 +29,8 @@ Editing:
 Creates a Windows' system tray icon that can provide a URL for a webpage that 
 can send key commands to Cubase, or any other Windows application.
 
+Settings are preserved between page loads, and can also be saved to and loaded from file.
+
 This would work for any program, by updating a regexp.
 
     Sytem tray HTTP server -> HTTP document

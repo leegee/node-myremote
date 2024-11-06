@@ -7,7 +7,7 @@
     "modifiers": ["control"]
   },
   {
-    "icon": "⏺",
+    "icon": "🔴",
     "text": "Record",
     "color": "#AA0000",
     "key": "r",

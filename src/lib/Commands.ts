@@ -36,3 +36,28 @@ export function downloadCommandsJson() {
     link.download = 'commands.json';
     link.click();
 }
+
+
+export function loadCommandsFromFile(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
+
+    if (!file) {
+        console.warn("No file selected");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const content = e.target?.result as string;
+            const parsedCommands: Command[] = JSON.parse(content);
+            saveCommands(parsedCommands);
+            console.log("Commands loaded:", parsedCommands);
+        } catch (error) {
+            console.error("Error loading file:", error);
+        }
+    };
+
+    reader.readAsText(file);
+}

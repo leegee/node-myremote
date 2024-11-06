@@ -1,15 +1,18 @@
 <!-- EditCommands.svelte -->
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { commandsStore } from "../stores/commandsStore";
-  import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import type { Command, Modifier } from "../types/commands";
   import "./EditCommands.css";
-  import { downloadCommandsJson, setCommandsToDefault } from "./Commands";
+  import { commandsStore } from "../stores/commandsStore";
+  import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
+  import LoadCommandsFromFile from "./LoadCommandsFromFile.svelte";
+  import SaveCommandsToFile from "./SaveCommandsToFile.svelte";
+  import ResetCommands from "./ResetCommands.svelte";
 
   let commands: Command[] = [];
+
   const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
-  let isEditingIndex: number | null = null; // Store the index of the command being edited
+  let commandEdidintIndex: number | null = null;
 
   const unsubscribe = commandsStore.subscribe((value) => {
     commands = value;
@@ -26,16 +29,11 @@
   }
 
   function editCommand(index: number) {
-    isEditingIndex = index;
+    commandEdidintIndex = index;
   }
 
   function clearEditing() {
-    isEditingIndex = null;
-  }
-
-  function handleResetToDefaults() {
-    const defaultCommands = setCommandsToDefault();
-    commandsStore.set(defaultCommands);
+    commandEdidintIndex = null;
   }
 </script>
 
@@ -54,8 +52,7 @@
   </thead>
   <tbody>
     {#each commands as command, index}
-      {#if isEditingIndex === index}
-        <!-- Render the editor for the command being edited -->
+      {#if commandEdidintIndex === index}
         <AddOrEditCommandRow
           {possibleModifiers}
           {command}
@@ -88,7 +85,6 @@
       {/if}
     {/each}
 
-    <!-- Add Command Row -->
     <AddOrEditCommandRow
       {possibleModifiers}
       command={null}
@@ -98,9 +94,7 @@
 </table>
 
 <nav class="toolbar">
-  <button on:click={handleResetToDefaults}> Reset to defaults. </button>
-
-  <button on:click={downloadCommandsJson}>Download</button>
-
-  <!-- <button on:click={downloadCommandsJson}>Load</button> -->
+  <ResetCommands />
+  <SaveCommandsToFile />
+  <LoadCommandsFromFile />
 </nav>
