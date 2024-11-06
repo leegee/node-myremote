@@ -3,7 +3,7 @@
   import LargeIcon from "./LargeIcon.svelte";
   import { commandsStore } from "../stores/commandsStore";
   import type { Command } from "../types/commands";
-  import { setupDragAndDrop } from "./dragDrop";
+  import { setupDragAndDrop } from "../lib/dragDrop";
 
   export let ws: WebSocket;
 

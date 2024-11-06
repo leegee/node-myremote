@@ -1,9 +1,9 @@
 <!-- AddOrEditCommandRow.svelte -->
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import "./CommandsTable.css";
   import { commandsStore } from "../stores/commandsStore";
   import type { Command, Modifier } from "../types/commands";
-  import "./EditCommands.css";
 
   export let possibleModifiers: Modifier[];
   export let command: Command | null = null; // Command to edit

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import IconList from "./lib/IconList.svelte";
-  import EditCommands from "./lib/EditCommands.svelte";
-  import Modal from "./lib/Modal.svelte";
+  import IconList from "./components/IconList.svelte";
+  import EditCommands from "./components/CommandsTable.svelte";
+  import Modal from "./components/Modal.svelte";
 
   let ws: WebSocket;
   let isConnected: boolean = false;

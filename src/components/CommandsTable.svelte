@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { Command, Modifier } from "../types/commands";
-  import "./EditCommands.css";
+  import "./CommandsTable.css";
   import { commandsStore } from "../stores/commandsStore";
-  import { setupDragAndDrop } from "./dragDrop";
+  import { setupDragAndDrop } from "../lib/dragDrop";
   import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import LoadCommandsFromFile from "./LoadCommandsFromFile.svelte";
   import SaveCommandsToFile from "./SaveCommandsToFile.svelte";

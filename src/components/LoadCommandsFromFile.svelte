@@ -3,7 +3,7 @@
 <script lang="ts">
   import { commandsStore } from "../stores/commandsStore";
   import type { Command } from "../types/commands";
-  import { saveCommands } from "./Commands";
+  import { saveCommands } from "../lib/Commands";
 
   function loadCommandsFromFile(event: Event) {
     const input = event.target as HTMLInputElement;
