@@ -5,6 +5,7 @@
   import AddOrEditCommandRow from "./AddOrEditCommandRow.svelte";
   import type { Command, Modifier } from "../types/commands";
   import "./EditCommands.css";
+  import { setCommandsToDefault } from "./Commands";
 
   let commands: Command[] = [];
   const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
@@ -25,11 +26,16 @@
   }
 
   function editCommand(index: number) {
-    isEditingIndex = index; // Set the index of the command to edit
+    isEditingIndex = index;
   }
 
   function clearEditing() {
-    isEditingIndex = null; // Clear the editing index
+    isEditingIndex = null;
+  }
+
+  function handleResetToDefaults() {
+    const defaultCommands = setCommandsToDefault();
+    commandsStore.set(defaultCommands);
   }
 </script>
 
@@ -90,3 +96,7 @@
     />
   </tbody>
 </table>
+
+<nav class="toolbar">
+  <button on:click={handleResetToDefaults}> Reset to defaults. </button>
+</nav>
