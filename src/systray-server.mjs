@@ -13,7 +13,11 @@ import open from 'open';
 
 let TRAY;
 
-const requiredEnvVars = [ 'VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE' ];
+const REQUIRED_ENV_VARS = [ 'VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE' ];
+const VALID_MODIFIERS = [ 'control', 'shift', 'alt', 'command' ];
+const __filename = fileURLToPath( import.meta.url );
+const __dirname = path.dirname( __filename );
+const DIST_DIR = path.join( __dirname, '..', 'dist' );
 
 const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
@@ -68,7 +72,7 @@ async function sendKeyCombo ( command ) {
         }
 
         const modifiers = Array.isArray( command.modifiers )
-            ? command.modifiers.filter( modifier => validModifiers.includes( modifier ) )
+            ? command.modifiers.filter( modifier => VALID_MODIFIERS.includes( modifier ) )
             : [];
 
         console.debug( "Sending", command.key, modifiers );
@@ -81,31 +85,8 @@ async function sendKeyCombo ( command ) {
     }
 }
 
-
-dotenv.config();
-
-const missingEnvVars = requiredEnvVars.filter( varName => !process.env[ varName ] );
-if ( missingEnvVars.length > 0 ) {
-    console.error( `Missing required environment variables: ${ missingEnvVars.join( ', ' ) }` );
-    process.exit( 1 );
-}
-
-const validModifiers = [ 'control', 'shift', 'alt', 'command' ];
-const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
-const regexp = process.env.VITE_APP_RE;
-const reContainsTargetApp = new RegExp( regexp, 'i' );
-const wsPort = process.env.VITE_WS_PORT || 8223;
-const httpPort = process.env.VITE_HTTP_PORT || 8224;
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = path.dirname( __filename );
-const distDir = path.join( __dirname, '..', 'dist' );
-const wsAddress = 'ws://' + getLocalIP() + ':' + wsPort;
-const httpAddressLink = 'http://' + getLocalIP() + ':' + httpPort + '?' + encodeURIComponent( wsAddress );
-
-console.log( httpAddressLink );
-
 const httpServer = http.createServer( ( _req, res ) => {
-    fs.readFile( path.join( distDir, 'index.html' ), ( err, data ) => {
+    fs.readFile( path.join( DIST_DIR, 'index.html' ), ( err, data ) => {
         if ( err ) {
             console.error( err );
             res.statusCode = 404;
@@ -119,6 +100,21 @@ const httpServer = http.createServer( ( _req, res ) => {
     } );
 } );
 
+dotenv.config();
+
+const missingEnvVars = REQUIRED_ENV_VARS.filter( varName => !process.env[ varName ] );
+if ( missingEnvVars.length > 0 ) {
+    console.error( `Missing required environment variables: ${ missingEnvVars.join( ', ' ) }` );
+    process.exit( 1 );
+}
+
+const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
+const regexp = process.env.VITE_APP_RE;
+const reContainsTargetApp = new RegExp( regexp, 'i' );
+const wsPort = process.env.VITE_WS_PORT || 8223;
+const httpPort = process.env.VITE_HTTP_PORT || 8224;
+const wsAddress = 'ws://' + getLocalIP() + ':' + wsPort;
+const httpAddressLink = 'http://' + getLocalIP() + ':' + httpPort + '?' + encodeURIComponent( wsAddress );
 
 Tray.create(
     ( _tray ) => {
