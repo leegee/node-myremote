@@ -45,12 +45,27 @@ elevated privelages to listen to all network interfaces:
     netsh http add urlacl url=http://+:8223/ user=Everyone
     netsh http add urlacl url=http://+:8224/ user=Everyone
 
-## Flow
+## Program Flow
 
     Build: vite -> HTML/JS/CSS bundle
     Sytem tray HTTP server -> HTML/JS/CSS bundle
     HTML/JS/CSS bundle -> System Tray WS server 
     System Tray WS server -> Key combination -> Target App
+
+## Build
+
+    bun run build:dotnet
+
+This will build the vite bundle, copy assets to the dotnet directory,
+run the dotnet release build, but will not run  the installer, which
+should be done after a build with:
+
+    bun run installer
+
+## Dev
+
+Use the Vite dev server, make sure to append a query string with an encoded URI
+to the web socket server: the sort of thing output by [the Node app prototype](src/systray-server.mjs).
 
 ## Resources
 
