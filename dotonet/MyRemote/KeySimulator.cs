@@ -23,7 +23,6 @@ namespace MyRemote
         }
 
         // Main method to simulate key press with optional modifiers
-        // Main method to simulate key press with optional modifiers
         public void SimulateKeyPress(string key, string[] modifiers)
         {
             if (string.IsNullOrEmpty(key))
@@ -46,7 +45,7 @@ namespace MyRemote
                             _inputSimulator.Keyboard.KeyDown(
                                 ConvertModifierToVirtualKey(parsedModifier)
                             );
-                            pressedModifiers.Add(parsedModifier); // Keep track of pressed modifiers
+                            pressedModifiers.Add(parsedModifier);
                         }
                         else
                         {
@@ -56,13 +55,12 @@ namespace MyRemote
                 }
 
                 // Simulate the key press
-                var virtualKey = ConvertKey(key);
+                var virtualKey = KeyMapping.GetVirtualKeyCode(key);
                 _inputSimulator.Keyboard.KeyPress(virtualKey);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error simulating key press: {ex.Message}");
-                // Optionally log the exception or handle it as needed
             }
             finally
             {
@@ -71,26 +69,6 @@ namespace MyRemote
                 {
                     _inputSimulator.Keyboard.KeyUp(ConvertModifierToVirtualKey(modifier));
                 }
-            }
-        }
-
-        // Converts a key string (e.g., "VK_S") to VirtualKeyCode
-        private WindowsInput.Native.VirtualKeyCode ConvertKey(string key)
-        {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("Key cannot be null or empty", nameof(key));
-            }
-
-            // Attempt to parse the key as VirtualKeyCode
-            if (Enum.TryParse(key, true, out WindowsInput.Native.VirtualKeyCode virtualKey))
-            {
-                return virtualKey;
-            }
-            else
-            {
-                // If the key is invalid, throw an exception
-                throw new ArgumentOutOfRangeException(nameof(key), $"Invalid key: {key}");
             }
         }
 
