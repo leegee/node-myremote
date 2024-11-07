@@ -40,6 +40,12 @@ To re-arrange commands, drag the icons or table rows.
 
 This would work for any program, by updating the regex in the `.env`.
 
+## Dot Net
+
+    # As admin:
+    netsh http add urlacl url=http://+:8223/ user=Everyone
+
+
 ## Resources
 
 * https://www.utf8icons.com

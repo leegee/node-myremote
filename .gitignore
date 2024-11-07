@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+mono/MyRemote/bin
+mono/MyRemote/obj
