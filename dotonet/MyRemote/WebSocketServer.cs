@@ -1,10 +1,10 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net.Http;
 
 namespace MyRemote
 {
@@ -17,26 +17,37 @@ namespace MyRemote
                 string? publicIp = await GetPublicIPAsync();
                 if (publicIp == null)
                 {
-                    MessageBox.Show("Unable to retrieve public IP. Please check your network.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Unable to retrieve public IP. Please check your network.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                     return;
                 }
 
                 string url = $"http://+:{port}/";
-                Console.WriteLine($"Trying to listen on {url}");
 
                 HttpListener listener = new HttpListener();
                 listener.Prefixes.Add(url);
                 listener.Start();
                 Console.WriteLine($"WebSocket server listening on {url}");
 
-                while (true)
-                {
-                    var context = await listener.GetContextAsync();
-                    if (context.Request.IsWebSocketRequest)
+                var cts = new CancellationTokenSource();
+                Task.Run(
+                    async () =>
                     {
-                        await HandleWebSocketRequest(context);
-                    }
-                }
+                        while (!cts.IsCancellationRequested)
+                        {
+                            var context = listener.GetContextAsync().Result;
+                            if (context.Request.IsWebSocketRequest)
+                            {
+                                await HandleWebSocketRequest(context);
+                            }
+                        }
+                    },
+                    cts.Token
+                );
             }
             catch (Exception ex)
             {
@@ -49,27 +60,48 @@ namespace MyRemote
             try
             {
                 var wsContext = await context.AcceptWebSocketAsync(null);
-                if (wsContext?.WebSocket is WebSocket webSocket && webSocket.State == WebSocketState.Open)
+                if (
+                    wsContext?.WebSocket is WebSocket webSocket
+                    && webSocket.State == WebSocketState.Open
+                )
                 {
                     Console.WriteLine("WebSocket connection established");
 
                     var buffer = new byte[1024];
                     while (webSocket.State == WebSocketState.Open)
                     {
-                        var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        var receiveResult = await webSocket.ReceiveAsync(
+                            new ArraySegment<byte>(buffer),
+                            CancellationToken.None
+                        );
                         if (receiveResult.MessageType == WebSocketMessageType.Close)
                         {
-                            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                            await webSocket.CloseAsync(
+                                WebSocketCloseStatus.NormalClosure,
+                                "Closing",
+                                CancellationToken.None
+                            );
                             Console.WriteLine("WebSocket connection closed");
                         }
                         else
                         {
-                            string message = System.Text.Encoding.UTF8.GetString(buffer, 0, receiveResult.Count);
+                            string message = System.Text.Encoding.UTF8.GetString(
+                                buffer,
+                                0,
+                                receiveResult.Count
+                            );
                             Console.WriteLine("Received: " + message);
 
                             MessageHandler.ProcessMessage(message);
 
-                            await webSocket.SendAsync(new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes("Echo: " + message)), WebSocketMessageType.Text, true, CancellationToken.None);
+                            await webSocket.SendAsync(
+                                new ArraySegment<byte>(
+                                    System.Text.Encoding.UTF8.GetBytes("Echo: " + message)
+                                ),
+                                WebSocketMessageType.Text,
+                                true,
+                                CancellationToken.None
+                            );
                         }
                     }
                 }

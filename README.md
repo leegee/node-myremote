@@ -34,17 +34,23 @@ and can also be saved to and loaded from file.
 
 To re-arrange commands, drag the icons or table rows.
 
-    Sytem tray HTTP server -> HTTP document
-    HTTP document -> System Tray WS server 
-    System Tray WS server -> Key combination -> Target App
-
 This would work for any program, by updating the regex in the `.env`.
 
-## Dot Net
+## Versions
+
+There is a Typescript version, and a dotnet version. The latter requires 
+elevated privelages to listen to all network interfaces:
 
     # As admin:
     netsh http add urlacl url=http://+:8223/ user=Everyone
+    netsh http add urlacl url=http://+:8224/ user=Everyone
 
+## Flow
+
+    Build: vite -> HTML/JS/CSS bundle
+    Sytem tray HTTP server -> HTML/JS/CSS bundle
+    HTML/JS/CSS bundle -> System Tray WS server 
+    System Tray WS server -> Key combination -> Target App
 
 ## Resources
 
