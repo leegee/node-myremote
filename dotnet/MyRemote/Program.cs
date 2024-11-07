@@ -14,7 +14,7 @@ namespace MyRemote
         [STAThread]
         static void Main()
         {
-            string envPath = "../../.env";
+            string envPath = ".env";
             Env.Load(envPath);
 
             string appTitle = Env.GetString("VITE_APP_TITLE", "MyRemote");
@@ -31,7 +31,7 @@ namespace MyRemote
 
             NotifyIcon trayIcon = new NotifyIcon()
             {
-                Icon = new Icon("../../src/assets/systray-icon.ico"),
+                Icon = new Icon("systray-icon.ico"),
                 Visible = true,
                 Text = appTitle,
             };
@@ -62,7 +62,7 @@ namespace MyRemote
 
         private static async Task StartWebServer(int port)
         {
-            var webServer = new WebServer("../../dist");
+            var webServer = new WebServer(".");
             await webServer.StartAsync(port);
         }
 

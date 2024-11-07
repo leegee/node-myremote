@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Product Id="*" Name="MyRemote" Language="1033" Version="0.1.0.0" Manufacturer="Lee Goddard" UpgradeCode="LeeGoddard-MyRemote-1">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
+
+    <!-- Define the target directory structure -->
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MyRemote">
+          <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="MyRemote.exe" Guid="LeeGoddard-MyRemote-Exe-1">
+              <File Id="MyRemoteExe" Name="MyRemote.exe" Source="..\bin\release\net4.8.1-windows\MyRemote.exe" />
+            </Component>
+            <Component Id="MyRemote.exe" Guid="LeeGoddard-MyRemote-Dlls-1">
+              <File Id="MyRemoteDlls" Name="*.dll" Source="..\bin\release\net4.8.1-windows\*.dll" />
+            </Component>
+            <Component Id="MyRemote.exe" Guid="LeeGoddard-MyRemote-Env-1">
+              <File Source="..\.env" KeyPath="yes" />
+            </Component>
+            <Component Id="MyRemote.exe" Guid="LeeGoddard-MyRemote-Vite-1">
+              <File Id="vite-bundle" Source="..\index.html" />
+            </Component>
+          </DirectoryRef>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- Add shortcuts -->
+    <DirectoryRef Id="APPLICATIONFOLDER">
+      <Component Id="ApplicationShortcut" Guid="PUT-UNIQUE-GUID-HERE">
+        <Shortcut Id="AppShortcut" 
+          Directory="ProgramMenuFolder" 
+          Name="MyRemote" 
+          WorkingDirectory="INSTALLFOLDER" 
+          Icon="icon.ico" 
+          Advertise="yes" />
+        <RemoveFolder Id="RemoveAppShortcut" Directory="ProgramMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\LeeGoddard\MyRemote" Name="installed" Type="integer" Value="1" KeyPath="yes" /> </Component>
+    </DirectoryRef>
+
+    <!-- Define Features -->
+    <Feature Id="MainApplication" Title="MyRemote" Level="1">
+      <ComponentRef Id="MyRemote.exe" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+
+  <Icon Id="icon.ico" SourceFile="..\systray-icon.ico" />
+
+</Wix>
