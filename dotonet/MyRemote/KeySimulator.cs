@@ -1,6 +1,6 @@
+using System;
 using WindowsInput;
 using WindowsInput.Native;
-using System;
 
 namespace MyRemote
 {
@@ -14,7 +14,7 @@ namespace MyRemote
             SHIFT,
             CONTROL,
             ALT,
-            WIN
+            WIN,
         }
 
         public KeySimulator()
@@ -23,40 +23,53 @@ namespace MyRemote
         }
 
         // Main method to simulate key press with optional modifiers
+        // Main method to simulate key press with optional modifiers
         public void SimulateKeyPress(string key, string[] modifiers)
         {
-            // Simulate the modifiers being pressed
-            if (modifiers != null)
+            if (string.IsNullOrEmpty(key))
             {
-                foreach (var modifier in modifiers)
-                {
-                    if (Enum.TryParse(modifier, true, out Modifier parsedModifier))
-                    {
-                        _inputSimulator.Keyboard.KeyDown(ConvertModifierToVirtualKey(parsedModifier));
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Invalid modifier: {modifier}");
-                    }
-                }
+                throw new ArgumentException("Null key supplied");
             }
 
-            // Simulate the key press
-            if (!string.IsNullOrEmpty(key))
+            // Track successfully pressed modifiers to release them if an error occurs
+            var pressedModifiers = new List<Modifier>();
+
+            try
             {
+                // Simulate the modifiers being pressed
+                if (modifiers != null)
+                {
+                    foreach (var modifier in modifiers)
+                    {
+                        if (Enum.TryParse(modifier, true, out Modifier parsedModifier))
+                        {
+                            _inputSimulator.Keyboard.KeyDown(
+                                ConvertModifierToVirtualKey(parsedModifier)
+                            );
+                            pressedModifiers.Add(parsedModifier); // Keep track of pressed modifiers
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid modifier: {modifier}");
+                        }
+                    }
+                }
+
+                // Simulate the key press
                 var virtualKey = ConvertKey(key);
                 _inputSimulator.Keyboard.KeyPress(virtualKey);
             }
-
-            // Release all modifiers
-            if (modifiers != null)
+            catch (Exception ex)
             {
-                foreach (var modifier in modifiers)
+                Console.WriteLine($"Error simulating key press: {ex.Message}");
+                // Optionally log the exception or handle it as needed
+            }
+            finally
+            {
+                // Ensure all pressed modifiers are released
+                foreach (var modifier in pressedModifiers)
                 {
-                    if (Enum.TryParse(modifier, true, out Modifier parsedModifier))
-                    {
-                        _inputSimulator.Keyboard.KeyUp(ConvertModifierToVirtualKey(parsedModifier));
-                    }
+                    _inputSimulator.Keyboard.KeyUp(ConvertModifierToVirtualKey(modifier));
                 }
             }
         }
@@ -86,11 +99,15 @@ namespace MyRemote
         {
             switch (modifier)
             {
-                case Modifier.SHIFT: return WindowsInput.Native.VirtualKeyCode.SHIFT;
-                case Modifier.CONTROL: return WindowsInput.Native.VirtualKeyCode.CONTROL;
-                case Modifier.ALT: return WindowsInput.Native.VirtualKeyCode.MENU; // Alt key
-                case Modifier.WIN: return WindowsInput.Native.VirtualKeyCode.LWIN; // Windows key
-                default: 
+                case Modifier.SHIFT:
+                    return WindowsInput.Native.VirtualKeyCode.SHIFT;
+                case Modifier.CONTROL:
+                    return WindowsInput.Native.VirtualKeyCode.CONTROL;
+                case Modifier.ALT:
+                    return WindowsInput.Native.VirtualKeyCode.MENU; // Alt key
+                case Modifier.WIN:
+                    return WindowsInput.Native.VirtualKeyCode.LWIN; // Windows key
+                default:
                     throw new ArgumentException($"Invalid modifier: {modifier}", nameof(modifier));
             }
         }
