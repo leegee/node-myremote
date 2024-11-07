@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "prebuild:dotnet": "bun run build",
-    "build:dotnet": "cd dotnet/MyRemote && dotnet restore && dotnet build && dotnet run",
+    "build:dotnet": "cd dotnet/MyRemote && dotnet restore && dotnet build -c Release && open bin/Release/net4.8.1-windows",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
     "prepkg": "npm run check && npm run build",

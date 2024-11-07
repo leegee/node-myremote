@@ -23,9 +23,10 @@ namespace MyRemote
             Application.SetCompatibleTextRenderingDefault(false);
 
             int wsPort = int.Parse(Env.GetString("VITE_WS_PORT", "8081"));
-            Task.Run(() => StartWebSocketServer(wsPort));
-
             int httpPort = int.Parse(Env.GetString("VITE_HTTP_PORT", "8080"));
+            string httpUrl = GetHttpURL(httpPort, wsPort);
+
+            Task.Run(() => StartWebSocketServer(wsPort));
             Task.Run(() => StartWebServer(httpPort));
 
             NotifyIcon trayIcon = new NotifyIcon()
@@ -41,7 +42,7 @@ namespace MyRemote
                 null,
                 (sender, e) =>
                 {
-                    OpenPageOnPublicIp(httpPort);
+                    OpenPageOnPublicIp(httpUrl);
                 }
             );
             contextMenu.Items.Add(
@@ -79,16 +80,20 @@ namespace MyRemote
                 .ToString();
         }
 
-        public static void OpenPageOnPublicIp(int httpPort)
+        public static void OpenPageOnPublicIp(string url)
+        {
+            Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+        }
+
+        public static string GetHttpURL(int httpPort, int wsPort)
         {
             var publicIp = GetPublicIp();
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName = "http://" + publicIp + ':' + httpPort,
-                    UseShellExecute = true,
-                }
-            );
+            return "http://"
+                + publicIp
+                + ':'
+                + httpPort
+                + '?'
+                + Uri.EscapeDataString("http://" + publicIp + ':' + wsPort);
         }
     }
 }
