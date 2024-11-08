@@ -56,16 +56,21 @@ elevated privelages to listen to all network interfaces:
 
     bun run build:dotnet
 
-This will build the vite bundle, copy assets to the dotnet directory,
-run the dotnet release build, but will not run  the installer, which
-should be done after a build with:
+That  will build the vite bundle, copy assets to the dotnet directory,
+run the dotnet release build, after which a tar ball can be created:
 
-    bun run installer
+    bun run bundle
 
 ## Dev
 
 Use the Vite dev server, make sure to append a query string with an encoded URI
 to the web socket server: the sort of thing output by [the Node app prototype](src/systray-server.mjs).
+
+## Future Work
+
+* Parse a Cubase XML
+* Expose the regex used to select the program
+* Maybe add options to launch programs
 
 ## Resources
 
