@@ -120,15 +120,17 @@ Tray.create(
     ( _tray ) => {
         TRAY = _tray;
         httpServer.listen( httpPort, '0.0.0.0', () => {
-            console.info( `Server running at ${ httpAddressLink }/` );
+            console.info( `HTTP server running at ${ httpAddressLink }/` );
         } );
 
         const wss = new WebSocketServer( {
             port: wsPort
         } );
+        console.info( `WS server running on port ${ wsPort }/` );
+
         wss.on( 'connection', ( ws ) => {
             console.info( 'WS client connected' );
-            // tray.notify( appTitle, 'Connected' );
+            // TRAY.notify( appTitle, 'Connected' );
             ws.on( 'message', processMessage );
             ws.on( 'close', () => {
                 console.info( 'Client disconnected' );
