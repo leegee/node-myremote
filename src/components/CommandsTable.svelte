@@ -10,7 +10,6 @@
   import ResetCommands from "./ResetCommands.svelte";
 
   let commands: Command[] = [];
-  let draggedIndex: number | null = null;
   let commandEdidintIndex: number | null = null;
   const possibleModifiers: Modifier[] = ["shift", "control", "alt", "command"];
 
