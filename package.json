@@ -11,7 +11,7 @@
     "build": "vite build",
     "prebuild:dotnet": "bun run build; node -e \"fs=require('fs');fs.copyFileSync('./dist/index.html', './dotnet/MyRemote/index.html');fs.copyFileSync('src/assets/systray-icon.ico', 'dotnet/MyRemote/systray-icon.ico');fs.copyFileSync('.env', 'dotnet/MyRemote/.env');\"",
     "build:dotnet": "cd dotnet/MyRemote && dotnet restore && dotnet build -c Release; # See bin/Release/net4.8.1-windows",
-    "bundle": "",
+    "bundle": "tar -cvf \"dist/MyRemote.tar\" --exclude=\"*/\" -C \"dotnet/MyRemote/bin/Release/net4.8.1-windows/\" . && echo Open dist/ to see the tar ball",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
