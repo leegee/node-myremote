@@ -27,3 +27,4 @@ dist-ssr
 dotnet/MyRemote/index.html
 dotnet/MyRemote/*.ico
 dotnet/MyRemote/.env
+vite.config.js
