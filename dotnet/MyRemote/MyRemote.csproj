@@ -13,6 +13,7 @@
   <PropertyGroup>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
+    <GenerateSatelliteAssemblies>false</GenerateSatelliteAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,4 +40,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="RemoveSatelliteAssemblies" AfterTargets="Build">
+    <ItemGroup>
+      <SatelliteAssemblies Remove="@(_SatelliteAssembly)" />
+    </ItemGroup>
+    <Delete Files="@(_SatelliteAssembly)" />
+  </Target>
 </Project>
