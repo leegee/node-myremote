@@ -66,9 +66,12 @@
     }
   }
 
-  function setFullScreen() {
+  async function setFullScreen() {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
+      await document.documentElement.requestFullscreen();
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock("landscape").catch(console.error);
+      }
     }
     window.removeEventListener("click", setFullScreen);
   }
