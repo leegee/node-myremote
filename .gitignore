@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 */MyRemote/bin
 */MyRemote/obj
+dotnet/MyRemote/index.html
+dotnet/MyRemote/*.ico
+dotnet/MyRemote/.env
