@@ -22,8 +22,8 @@ namespace MyRemote
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            int wsPort = int.Parse(Env.GetString("VITE_WS_PORT", "8081"));
-            int httpPort = int.Parse(Env.GetString("VITE_HTTP_PORT", "8080"));
+            int wsPort = int.Parse(Env.GetString("VITE_WS_PORT", "8223"));
+            int httpPort = int.Parse(Env.GetString("VITE_HTTP_PORT", "8224"));
             string httpUrl = GetHttpURL(httpPort, wsPort);
 
             Task.Run(() => StartWebSocketServer(wsPort));
@@ -38,13 +38,14 @@ namespace MyRemote
 
             ContextMenuStrip contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add(
-                "Open",
+                $"Open {appTitle}",
                 null,
                 (sender, e) =>
                 {
                     OpenPageOnPublicIp(httpUrl);
                 }
             );
+            contextMenu.Items.Add(new ToolStripSeparator());
             contextMenu.Items.Add(
                 "Exit",
                 null,
