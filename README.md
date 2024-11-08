@@ -50,6 +50,8 @@ elevated privelages to listen to all network interfaces:
     # As admin:
     netsh http add urlacl url=http://+:8223/ user=Everyone
     netsh http add urlacl url=http://+:8224/ user=Everyone
+    netsh advfirewall firewall add rule name="MyRemote" protocol=TCP dir=in localport=8223 action=allow
+    netsh advfirewall firewall add rule name="MyRemote" protocol=TCP dir=in localport=8224 action=allow
 
 ## Program Flow
 

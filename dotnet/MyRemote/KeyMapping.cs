@@ -94,6 +94,6 @@ public static class KeyMapping
         }
 
         // If no valid key was found, throw an exception
-        throw new ArgumentOutOfRangeException(nameof(key), $"Invalid key: {key}");
+        throw new ArgumentOutOfRangeException(nameof(key), $"Invalid key mapping: {key}");
     }
 }
