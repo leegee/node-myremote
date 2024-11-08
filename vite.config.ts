@@ -16,7 +16,7 @@ if (missingEnvVars.length > 0) {
 }
 
 const processEnv: Record<string, string | undefined> = requiredEnvVars.reduce((acc, varName) => {
-  acc[varName] = process.env[varName]; // Assign the environment variable
+  acc[varName] = process.env[varName];
   return acc;
 }, {} as Record<string, string | undefined>);
 
