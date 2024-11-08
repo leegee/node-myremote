@@ -24,7 +24,9 @@ dist-ssr
 *.sw?
 */MyRemote/bin
 */MyRemote/obj
+vite.config.js
 dotnet/MyRemote/index.html
 dotnet/MyRemote/*.ico
 dotnet/MyRemote/.env
-vite.config.js
+dotnet/MyRemote/dist/
+dotnet/MyRemote/temp/
