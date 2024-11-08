@@ -34,20 +34,10 @@ namespace MyRemote
                 Console.WriteLine($"WebSocket server listening on {url}");
 
                 var cts = new CancellationTokenSource();
-                Task.Run(
-                    async () =>
-                    {
-                        while (!cts.IsCancellationRequested)
-                        {
-                            var context = listener.GetContextAsync().Result;
-                            if (context.Request.IsWebSocketRequest)
-                            {
-                                await HandleWebSocketRequest(context);
-                            }
-                        }
-                    },
-                    cts.Token
-                );
+                CancellationToken token = cts.Token;
+
+                // Start the listener loop in a separate task for async handling
+                Task.Run(async () => await ListenForConnectionsAsync(listener, token), token);
             }
             catch (Exception ex)
             {
@@ -55,7 +45,31 @@ namespace MyRemote
             }
         }
 
-        private async Task HandleWebSocketRequest(HttpListenerContext context)
+        private async Task ListenForConnectionsAsync(HttpListener listener, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    // Use await to prevent blocking
+                    var context = await listener.GetContextAsync();
+                    if (context.Request.IsWebSocketRequest)
+                    {
+                        // Handle each connection in a separate task
+                        Task.Run(() => HandleWebSocketRequest(context, token));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error accepting connection: " + ex.Message);
+                }
+            }
+        }
+
+        private async Task HandleWebSocketRequest(
+            HttpListenerContext context,
+            CancellationToken token
+        )
         {
             try
             {
@@ -68,18 +82,18 @@ namespace MyRemote
                     Console.WriteLine("WebSocket connection established");
 
                     var buffer = new byte[1024];
-                    while (webSocket.State == WebSocketState.Open)
+                    while (webSocket.State == WebSocketState.Open && !token.IsCancellationRequested)
                     {
                         var receiveResult = await webSocket.ReceiveAsync(
                             new ArraySegment<byte>(buffer),
-                            CancellationToken.None
+                            token
                         );
                         if (receiveResult.MessageType == WebSocketMessageType.Close)
                         {
                             await webSocket.CloseAsync(
                                 WebSocketCloseStatus.NormalClosure,
                                 "Closing",
-                                CancellationToken.None
+                                token
                             );
                             Console.WriteLine("WebSocket connection closed");
                         }
@@ -100,7 +114,7 @@ namespace MyRemote
                                 ),
                                 WebSocketMessageType.Text,
                                 true,
-                                CancellationToken.None
+                                token
                             );
                         }
                     }
