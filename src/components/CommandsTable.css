@@ -2,6 +2,8 @@
   .command-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 32em;
+    max-width: 60em;
   }
 
   .command-table tr {
