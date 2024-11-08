@@ -6,13 +6,15 @@ Remote control Windows applications from a mobile device/web page.
 
     npm i                             # bun dislikes some deps
     
-    # For TS:
+    # For the JS version:
     bun run build
     bun run start
     
-    # For binary:
+    # For the dotnet version:
     bun run build:dotnet
     bun run start:dotnet
+
+Or use the [Windows installer](./dotnet/MyRemote/Output/Install-MyRemote.exe).
 
 System tray:
 
