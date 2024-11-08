@@ -5,8 +5,14 @@ Remote control Windows applications from a mobile device/web page.
 ## Synopsis
 
     npm i                             # bun dislikes some deps
+    
+    # For TS:
     bun run build
-    node src/taskbar-server.mjs
+    bun run start
+    
+    # For binary:
+    bun run build:dotnet
+    bun run start:dotnet
 
 System tray:
 
