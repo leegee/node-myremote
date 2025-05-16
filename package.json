@@ -12,7 +12,7 @@
     "prebuild:dotnet": "bun run build; ncp ./dist/index.html ./dotnet/MyRemote/index.html; ncp ./src/assets/systray-icon.ico dotnet/MyRemote/systray-icon.ico; ncp .env dotnet/MyRemote/.env\"",
     "build:dotnet": "cd dotnet/MyRemote && dotnet restore && dotnet build -c Release; # See bin/Release/net4.8.1-windows",
     "temp:dotnet": "cd ./dotnet/MyRemote && dotnet run",
-    "start:dotnet": "cd ./dotnet/MyRemote/bin/Release/net4.8.1-windows/; ./MyRemote.exe",
+    "start:dotnet": "cmd /c \"cd dotnet/MyRemote/bin/Release/net4.8.1-windows && start MyRemote.exe\"",
     "bundle": "tar -cvf \"dist/MyRemote.tar\" --exclude=\"*/\" -C \"dotnet/MyRemote/bin/Release/net4.8.1-windows/\" . && echo Open dist/ to see the tar ball",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
