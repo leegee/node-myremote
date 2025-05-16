@@ -28,7 +28,7 @@
       wsInstance.onmessage = (event) => {
         console.log(
           "Message from server:",
-          JSON.stringify(event.data, null, 4)
+          JSON.stringify(event.data, null, 4),
         );
       };
 
@@ -39,7 +39,7 @@
         if (reconnectAttempts < WS_MAX_RECONNECT_ATTEMPTS) {
           reconnectAttempts++;
           console.log(
-            `Attempting to reconnect... (${reconnectAttempts}/${WS_MAX_RECONNECT_ATTEMPTS})`
+            `Attempting to reconnect... (${reconnectAttempts}/${WS_MAX_RECONNECT_ATTEMPTS})`,
           );
           setTimeout(() => {
             setupWebSocket();
@@ -66,19 +66,19 @@
     }
   }
 
-  async function setFullScreen() {
-    if (!document.fullscreenElement) {
-      await document.documentElement.requestFullscreen();
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock("landscape").catch(console.error);
-      }
-    }
-    window.removeEventListener("click", setFullScreen);
-  }
+  // async function setFullScreen() {
+  //   if (!document.fullscreenElement) {
+  //     await document.documentElement.requestFullscreen();
+  //     if (screen.orientation && screen.orientation.lock) {
+  //       screen.orientation.lock("landscape").catch(console.error);
+  //     }
+  //   }
+  //   window.removeEventListener("click", setFullScreen);
+  // }
 
   onMount(() => {
     setupWebSocket();
-    window.addEventListener("click", setFullScreen);
+    // window.addEventListener("click", setFullScreen);
   });
 </script>
 
