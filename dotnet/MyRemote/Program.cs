@@ -11,6 +11,9 @@ namespace MyRemote
 {
     public class Program
     {
+        static WebSocketServer? webSocketServer;
+        static WebServer? webServer;
+
         [STAThread]
         static void Main()
         {
@@ -45,31 +48,49 @@ namespace MyRemote
                     OpenPageOnPublicIp(httpUrl);
                 }
             );
+
             contextMenu.Items.Add(new ToolStripSeparator());
+
             contextMenu.Items.Add(
                 "Exit",
                 null,
-                (sender, e) =>
+                async (sender, e) =>
                 {
                     trayIcon.Visible = false;
+
+                    if (webSocketServer != null)
+                        await webSocketServer.StopAsync();
+
+                    if (webServer != null)
+                        await webServer.StopAsync();
+
                     Application.Exit();
                 }
             );
+
             trayIcon.ContextMenuStrip = contextMenu;
 
-            // Run the application
+            Application.ApplicationExit += async (sender, e) =>
+            {
+                if (webSocketServer != null)
+                    await webSocketServer.StopAsync();
+
+                if (webServer != null)
+                    await webServer.StopAsync();
+            };
+                
             Application.Run();
         }
 
         private static async Task StartWebServer(int port)
         {
-            var webServer = new WebServer(".");
+            webServer = new WebServer(".");
             await webServer.StartAsync(port);
         }
 
         private static async Task StartWebSocketServer(int port)
         {
-            WebSocketServer webSocketServer = new WebSocketServer();
+            webSocketServer = new WebSocketServer();
             await webSocketServer.StartAsync(port);
         }
 
@@ -96,5 +117,6 @@ namespace MyRemote
                 + '?'
                 + Uri.EscapeDataString("http://" + publicIp + ':' + wsPort);
         }
+
     }
 }

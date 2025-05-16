@@ -5,11 +5,18 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Open.Nat;
+using System.Threading.Tasks;
 
 namespace MyRemote
 {
     public class WebSocketServer
     {
+
+        private readonly List<Task> _activeConnections = new();
+        private HttpListener? _listener;
+        private CancellationTokenSource? _cts;
+
         public async Task StartAsync(int port)
         {
             try
@@ -28,16 +35,24 @@ namespace MyRemote
 
                 string url = $"http://+:{port}/";
 
-                HttpListener listener = new HttpListener();
-                listener.Prefixes.Add(url);
-                listener.Start();
+                _listener = new HttpListener();
+                _listener.Prefixes.Add(url);
+                _listener.Start();
                 Console.WriteLine($"WebSocket server listening on {url}");
 
-                var cts = new CancellationTokenSource();
-                CancellationToken token = cts.Token;
+                _cts = new CancellationTokenSource();
+                CancellationToken token = _cts.Token;
 
-                // Start the listener loop in a separate task for async handling
-                Task.Run(async () => await ListenForConnectionsAsync(listener, token), token);
+                // Start the listener loop in a separate task for async handling - not awaiting
+                try
+                {
+                    _ = Task.Run(() => ListenForConnectionsAsync(_listener, token), token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Failed to start listener loop: " + ex.Message);
+                }
+
             }
             catch (Exception ex)
             {
@@ -56,7 +71,25 @@ namespace MyRemote
                     if (context.Request.IsWebSocketRequest)
                     {
                         // Handle each connection in a separate task
-                        Task.Run(() => HandleWebSocketRequest(context, token));
+                        #pragma warning disable CS4014
+                        var wsTask = Task.Run(() => HandleWebSocketRequest(context, token), token);
+                        #pragma warning restore CS4014
+
+                        lock (_activeConnections)
+                        {
+                            _activeConnections.Add(wsTask);
+                        }
+                        
+                        #pragma warning disable CS4014
+                        wsTask.ContinueWith(t =>
+                        {
+                            lock (_activeConnections)
+                            {
+                                _activeConnections.Remove(wsTask);
+                            }
+                        }, TaskScheduler.Default);
+                        #pragma warning restore CS4014
+
                     }
                 }
                 catch (Exception ex)
@@ -65,6 +98,43 @@ namespace MyRemote
                 }
             }
         }
+
+        public async Task StopAsync()
+        {
+            if (_cts == null || _listener == null)
+                return;
+
+            Console.WriteLine("Shutting down WebSocket server...");
+
+            _cts.Cancel();
+
+            try
+            {
+                _listener.Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error stopping listener: " + ex.Message);
+            }
+
+            Task[] tasksCopy;
+            lock (_activeConnections)
+            {
+                tasksCopy = _activeConnections.ToArray();
+            }
+
+            try
+            {
+                await Task.WhenAll(tasksCopy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error waiting for connections to close: " + ex.Message);
+            }
+
+            Console.WriteLine("Server shutdown complete.");
+        }
+
 
         private async Task HandleWebSocketRequest(
             HttpListenerContext context,
@@ -126,23 +196,22 @@ namespace MyRemote
             }
         }
 
-        private static async Task<string?> GetPublicIPAsync()
+        public static async Task<string?> GetPublicIPAsync()
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync("http://icanhazip.com");
-                    response.EnsureSuccessStatusCode();
-                    string ip = (await response.Content.ReadAsStringAsync()).Trim();
-                    return ip;
-                }
+                var discoverer = new NatDiscoverer();
+                var cts = new CancellationTokenSource(5000); 
+                var device = await discoverer.DiscoverDeviceAsync(PortMapper.Upnp, cts);
+                var ip = await device.GetExternalIPAsync();
+                return ip.ToString();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error getting public IP: " + ex.Message);
+                Console.WriteLine("UPnP failed: " + ex.Message);
                 return null;
             }
         }
+
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace MyRemote
@@ -10,12 +8,14 @@ namespace MyRemote
     public interface IWebServer
     {
         Task StartAsync(int port);
+        Task StopAsync();
     }
 
     public class WebServer : IWebServer
     {
         private readonly string httpDocRoot;
         private readonly byte[] buffer;
+        private HttpListener? _listener;
 
         public WebServer(string _httpDocRoot)
         {
@@ -28,12 +28,12 @@ namespace MyRemote
         public async Task StartAsync(int port)
         {
             Console.WriteLine($"Webserver start on {port}");
-            var listener = new HttpListener();
-            listener.Prefixes.Add($"http://+:{port}/");
+            _listener = new HttpListener();
+            _listener.Prefixes.Add($"http://+:{port}/");
 
             try
             {
-                listener.Start();
+                _listener.Start();
                 Console.WriteLine($"Webserver listening on {port}");
             }
             catch (HttpListenerException ex)
@@ -45,13 +45,11 @@ namespace MyRemote
                 return;
             }
 
-            Console.WriteLine($"Webserver listening on {port}");
-
             try
             {
-                while (true)
+                while (_listener.IsListening)
                 {
-                    var context = await listener.GetContextAsync();
+                    var context = await _listener.GetContextAsync();
                     var response = context.Response;
 
                     try
@@ -73,6 +71,20 @@ namespace MyRemote
             {
                 Console.WriteLine("Listener stopped unexpectedly: " + ex.Message);
             }
+        }
+
+        public Task StopAsync()
+        {
+            if (_listener != null && _listener.IsListening)
+            {
+                Console.WriteLine("Stopping web server...");
+                _listener.Stop();
+                _listener.Close();
+                _listener = null;
+                Console.WriteLine("Web server stopped.");
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
