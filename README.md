@@ -1,19 +1,21 @@
 # node-myremote
 
-Remote control Windows applications from a mobile device/web page.
+Remote control Cubase from a mobile device/web page.
+
+You could actually control any Windows application that accepts keyboard input, but ymmv.
 
 ## Synopsis
 
     npm i                             # bun dislikes some deps
     
-    # For the JS version:
-    bun run build
-    bun run start
-    
     # For the dotnet version:
     bun run build:dotnet
     bun run start:dotnet
 
+    # For the JS version:
+    bun run build
+    bun run start
+    
 Or use the [Windows installer](./dotnet/MyRemote/Output/Install-MyRemote.exe).
 
 System tray:
@@ -37,12 +39,14 @@ Editing:
 Creates a Windows' system tray icon that can provide a URL for a webpage that 
 can send key commands to Cubase, or any other Windows application.
 
-Key commands can be added and edited, are preserved between page loads, 
-and can also be saved to and loaded from file.
+Click 'edit' in the top right-hand corner to add, edited, and re-arranged buttons
+- changes are preserved between page loads, and can also be saved to and loaded from file.
 
-To re-arrange commands, drag the icons or table rows.
+Remember to check/update your Cubase key commands!
 
-This would work for any program, by updating the regex in the `.env`.
+## Programmes Other Than Cubase
+
+Configure the regex in the `.env` file.
 
 ## Versions
 
