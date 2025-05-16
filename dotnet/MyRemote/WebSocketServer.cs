@@ -1,11 +1,11 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Open.Nat;
 using System.Threading.Tasks;
 
 namespace MyRemote
@@ -21,11 +21,11 @@ namespace MyRemote
         {
             try
             {
-                string? publicIp = await GetPublicIPAsync();
+                string? publicIp = await GetIpAddress();
                 if (publicIp == null)
                 {
                     MessageBox.Show(
-                        "Unable to retrieve public IP. Please check your network.",
+                        "Unable to retrieve your intranet IP. Please check your network.",
                         "Error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -196,21 +196,24 @@ namespace MyRemote
             }
         }
 
-        public static async Task<string?> GetPublicIPAsync()
+        public static Task<string?> GetIpAddress()
         {
-            try
+            foreach (var ni in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
             {
-                var discoverer = new NatDiscoverer();
-                var cts = new CancellationTokenSource(5000); 
-                var device = await discoverer.DiscoverDeviceAsync(PortMapper.Upnp, cts);
-                var ip = await device.GetExternalIPAsync();
-                return ip.ToString();
+                if (ni.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
+                    continue;
+
+                var ipProps = ni.GetIPProperties();
+                foreach (var addr in ipProps.UnicastAddresses)
+                {
+                    if (addr.Address.AddressFamily == AddressFamily.InterNetwork && 
+                        !IPAddress.IsLoopback(addr.Address))
+                    {
+                        return Task.FromResult<string?>(addr.Address.ToString());
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("UPnP failed: " + ex.Message);
-                return null;
-            }
+            return null;
         }
 
     }
