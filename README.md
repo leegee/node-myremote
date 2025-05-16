@@ -46,8 +46,11 @@ This would work for any program, by updating the regex in the `.env`.
 
 ## Versions
 
-There is a Typescript version, and a dotnet version. The latter requires 
-elevated privelages to listen to all network interfaces:
+There is a Svelte Typescript version, and a dotnet version. 
+
+The former relies upon `robot.js` and thus a binary compiled for your specific version of Node.
+
+The latter requires elevated privelages to listen to all network interfaces:
 
     # As admin:
     netsh http add urlacl url=http://+:8223/ user=Everyone
@@ -79,8 +82,8 @@ to the web socket server: the sort of thing output by [the Node app prototype](s
 ## Future Work
 
 * Parse a Cubase XML
-* Expose the regex used to select the program
-* Maybe add options to launch programs
+* Expose the regex used to select Cubase
+* Maybe add options to launch programs/do other things on the host PC
 
 ## Resources
 
