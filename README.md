@@ -15,6 +15,12 @@ You could actually control any Windows application that accepts keyboard input, 
     # For the JS version:
     bun run build
     bun run start
+
+In both cases, the system tray (by the clock) will now show a dark icon for My Remote - 
+right-click and select Open, your web browser will open so that you can copy that address
+to your mobile device (and bookmark it).
+
+*For security reasons, your Cubase must be in the foreground to receive commands.*
     
 Or use the [Windows installer](./dotnet/MyRemote/Output/Install-MyRemote.exe).
 
