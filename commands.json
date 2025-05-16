@@ -4,51 +4,107 @@
     "text": "Save",
     "color": "#0000AA",
     "key": "s",
-    "modifiers": ["control"]
+    "modifiers": [
+      "control"
+    ]
   },
   {
     "icon": "🔴",
     "text": "Record",
     "color": "#AA0000",
     "key": "r",
-    "modifiers": ["control"]
+    "modifiers": [
+      "control"
+    ]
   },
-  { "icon": "▶", "text": "Play", "color": "#00AA00", "key": "space" },
-  { "icon": "⏸", "text": "Pause", "color": "#FFA500", "key": "numpad_0" },
-  { "icon": "[", "text": "Left locator", "color": "#FFA500", "key": "home" },
-  { "icon": "]", "text": "Right locator", "color": "#FFA500", "key": "end" },
-  { "linebreak": true },
-  { "icon": "↓", "text": "Down", "color": "#FFA500", "key": "down" },
-  { "icon": "↑", "text": "Up", "color": "#FFA500", "key": "up" },
-  { "icon": "←", "text": "Left", "color": "#FFA500", "key": "left" },
-  { "icon": "→", "text": "Right", "color": "#FFA500", "key": "right" },
-  { "linebreak": true },
+  {
+    "icon": "▶",
+    "text": "Play",
+    "color": "#00AA00",
+    "key": "space"
+  },
+  {
+    "icon": "⏸",
+    "text": "Pause",
+    "color": "#FFA500",
+    "key": "numpad_0"
+  },
+  {
+    "icon": "[",
+    "text": "Left locator",
+    "color": "#FFA500",
+    "key": "home"
+  },
+  {
+    "icon": "]",
+    "text": "Right locator",
+    "color": "#FFA500",
+    "key": "end"
+  },
+  {
+    "linebreak": true
+  },
+  {
+    "icon": "↓",
+    "text": "Down",
+    "color": "#FFA500",
+    "key": "down"
+  },
+  {
+    "icon": "↑",
+    "text": "Up",
+    "color": "#FFA500",
+    "key": "up"
+  },
+  {
+    "icon": "←",
+    "text": "Left",
+    "color": "#FFA500",
+    "key": "left"
+  },
+  {
+    "icon": "→",
+    "text": "Right",
+    "color": "#FFA500",
+    "key": "right"
+  },
+  {
+    "linebreak": true
+  },
   {
     "icon": "🡇",
     "text": "Select Down",
     "color": "#FFA500",
     "key": "down",
-    "modifiers": ["shift"]
+    "modifiers": [
+      "shift"
+    ]
   },
   {
     "icon": "🡅",
     "text": "Select Up",
     "color": "#FFA500",
     "key": "up",
-    "modifiers": ["shift"]
+    "modifiers": [
+      "shift"
+    ]
   },
   {
     "icon": "🡄",
     "text": "Select Left",
     "color": "#FFA500",
     "key": "left",
-    "modifiers": ["shift"]
+    "modifiers": [
+      "shift"
+    ]
   },
   {
     "icon": "🡆",
     "text": "Select Right",
     "color": "#FFA500",
     "key": "right",
-    "modifiers": ["shift"]
+    "modifiers": [
+      "shift"
+    ]
   }
 ]

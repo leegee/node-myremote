@@ -213,7 +213,7 @@ namespace MyRemote
                     }
                 }
             }
-            return null;
+            return Task.FromResult<string?>(null);
         }
 
     }
