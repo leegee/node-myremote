@@ -2,11 +2,12 @@
 
 Remote control Cubase from a mobile device/web page.
 
-You could actually control any Windows application that accepts keyboard input, but ymmv.
+You could actually control any Windows application that accepts keyboard input, ymmv.
 
 ## Synopsis
 
-    npm i                             # bun dislikes some deps
+    # bun dislikes some deps
+    npm i                             
     
     # For the dotnet version:
     bun run build:dotnet
@@ -16,9 +17,9 @@ You could actually control any Windows application that accepts keyboard input, 
     bun run build
     bun run start
 
-In both cases, the system tray (by the clock) will now show a dark icon for My Remote - 
-right-click and select Open, your web browser will open so that you can copy that address
-to your mobile device (and bookmark it).
+In both cases, the system tray (by the clock) will now show a dark icon for MyRemote - 
+right-click and select Open, your web browser will open so that you can copy that 
+address to your mobile device (and bookmark it).
 
 *For security reasons, your Cubase must be in the foreground to receive commands.*
     
@@ -45,8 +46,9 @@ Editing:
 Creates a Windows' system tray icon that can provide a URL for a webpage that 
 can send key commands to Cubase, or any other Windows application.
 
-Click 'edit' in the top right-hand corner to add, edited, and re-arranged buttons
-- changes are preserved between page loads, and can also be saved to and loaded from file.
+Click 'edit' in the top right-hand corner to add, edited, and re-arranged buttons - 
+changes are preserved between page loads, and can also be saved to and loaded 
+from file.
 
 Remember to check/update your Cubase key commands!
 
@@ -56,9 +58,10 @@ Configure the regex in the `.env` file.
 
 ## Versions
 
-There is a Svelte Typescript version, and a dotnet version. 
+There is a Svelte Typescript version, and a dotnet version.
 
-The former relies upon `robot.js` and thus a binary compiled for your specific version of Node.
+The former relies upon `robot.js` and thus a binary compiled for your specific 
+version of Node.
 
 The latter requires elevated privelages to listen to all network interfaces:
 
@@ -86,8 +89,8 @@ run the dotnet release build, after which a tar ball can be created:
 
 ## Dev
 
-Use the Vite dev server, make sure to append a query string with an encoded URI
-to the web socket server: the sort of thing output by [the Node app prototype](src/systray-server.mjs).
+Use the Vite dev server, make sure to append a query string with an encoded 
+URI to the web socket server as by the app when started.
 
 ## Future Work
 

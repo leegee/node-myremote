@@ -158,6 +158,9 @@ namespace MyRemote
 
     public static class MessageHandler
     {
+        [DllImport("user32.dll")]
+        private static extern bool FlashWindow(IntPtr hWnd, bool bInvert);
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -267,6 +270,7 @@ namespace MyRemote
                     if (hWnd != IntPtr.Zero)
                     {
                         SetForegroundWindow(hWnd);
+                        FlashWindow(hWnd, true);
                         return true;
                     }
                 }

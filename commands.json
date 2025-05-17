@@ -106,5 +106,15 @@
     "modifiers": [
       "shift"
     ]
+  },
+  {
+    "linebreak": true
+  },
+  {
+    "icon": "✅",
+    "text": "Enable/Disable",
+    "color": "#22FF22",
+    "key": "F5",
+    "modifiers": []
   }
 ]
