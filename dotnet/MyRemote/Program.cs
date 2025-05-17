@@ -39,6 +39,8 @@ namespace MyRemote
                 Text = appTitle,
             };
 
+            trayIcon.Text = "Right-click to open control page or scan QR";
+
             ContextMenuStrip contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add(
                 $"Open {appTitle}",
@@ -48,6 +50,11 @@ namespace MyRemote
                     OpenPageOnPublicIp(httpUrl);
                 }
             );
+
+            contextMenu.Items.Add("Show QR Code", null, (s, e) =>
+            {
+                new QRForm(httpUrl).Show();
+            });
 
             contextMenu.Items.Add(new ToolStripSeparator());
 

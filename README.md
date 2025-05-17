@@ -17,9 +17,9 @@ You could actually control any Windows application that accepts keyboard input, 
     bun run build
     bun run start
 
-In both cases, the system tray (by the clock) will now show a dark icon for MyRemote - 
-right-click and select Open, your web browser will open so that you can copy that 
-address to your mobile device (and bookmark it).
+In both cases, the system tray (by the clock) will now show a dark icon for MyRemote -
+right-click and either select to scan the QR code, or select Open to view MyRemote in
+your web browser so you can copy the address to your mobile device.
 
 *For security reasons, your Cubase must be in the foreground to receive commands.*
     
