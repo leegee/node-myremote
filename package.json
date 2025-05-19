@@ -2,7 +2,7 @@
   "name": "node-myremote",
   "description": "Send key combinations to a Windows application from a browser",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "bin": "src/systray-server.mjs",
   "scripts": {

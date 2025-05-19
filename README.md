@@ -90,11 +90,10 @@ run the dotnet release build, after which a tar ball can be created:
 
 ## Svelte Dev
 
-    bun run start  # Start the robot-js
-    bun run dev    # Start the Vite dev server
+    bun run start  # Starts the robot-js and outputs a URL
+    bun run dev    # Starts the Vite dev server 
 
-In the Vite-opened window, ppend a query string with an encoded 
-URI to the web socket server, as displayed by the app when started.
+`start` will output the remote's full URL to the console.
 
 ## Future Work
 
