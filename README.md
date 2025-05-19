@@ -88,13 +88,17 @@ run the dotnet release build, after which a tar ball can be created:
 
     bun run bundle
 
-## Dev
+## Svelte Dev
 
-Use the Vite dev server, make sure to append a query string with an encoded 
-URI to the web socket server as by the app when started.
+    bun run start  # Start the robot-js
+    bun run dev    # Start the Vite dev server
+
+In the Vite-opened window, ppend a query string with an encoded 
+URI to the web socket server, as displayed by the app when started.
 
 ## Future Work
 
+* For dev, have Vite open the full URL
 * Parse a Cubase XML
 * Expose the regex used to select Cubase
 * Maybe add options to launch programs/do other things on the host PC
