@@ -101,8 +101,7 @@
     </p>
   {:else}
     <p>
-      Connecting to {import.meta.env.VITE_APP_TITLE || "MyRemote"} service that should
-      be running on the same machine as the DAW...
+      Connecting to the {import.meta.env.VITE_APP_TITLE || "MyRemote"} service...
     </p>
   {/if}
 </main>

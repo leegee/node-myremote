@@ -63,7 +63,8 @@ There is a Svelte Typescript version, and a dotnet version.
 The former relies upon `robot.js` and thus a binary compiled for your specific 
 version of Node.
 
-The latter requires elevated privelages to listen to all network interfaces:
+The latter requires elevated privelages to listen to all network interfaces.
+This is performed by the installer if you use it:
 
     # As admin:
     netsh http add urlacl url=http://+:8223/ user=Everyone
