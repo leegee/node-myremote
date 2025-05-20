@@ -177,15 +177,32 @@ namespace MyRemote
         {
             Console.WriteLine("Processing message: " + message);
 
-            JsonDocument doc = JsonDocument.Parse(message);
+            using JsonDocument doc = JsonDocument.Parse(message);
             JsonElement root = doc.RootElement;
+
+            if (root.TryGetProperty("type", out var typeProperty))
+            {
+                string type = typeProperty.GetString() ?? "";
+                Console.WriteLine("Message type: " + type);
+
+                switch (type.ToLowerInvariant())
+                {
+                    case "config":
+                        ProcessConfigMessage(root);
+                        break;
+                    default:
+                        Console.WriteLine($"Unknown message type '{type}', ignoring.");
+                        break;
+                }
+                return;
+            }
+
             string? key = null;
             VirtualKeyCode? virtualKey = null;
-
+            
             if (root.TryGetProperty("key", out var keyProperty))
             {
                 key = keyProperty.GetString();
-
                 if (key == null)
                 {
                     Console.WriteLine("Key is null, skipping processing.");
@@ -196,13 +213,13 @@ namespace MyRemote
             }
             else
             {
-                Console.WriteLine("Key property not found.");
+                Console.WriteLine("Key/Type properties not found.");
                 return;
             }
 
             string[] modifiers = Array.Empty<string>();
 
-               if (root.TryGetProperty("modifiers", out var modifiersProperty))
+            if (root.TryGetProperty("modifiers", out var modifiersProperty))
             {
                 if (modifiersProperty.ValueKind == JsonValueKind.Array)
                 {
@@ -262,5 +279,13 @@ namespace MyRemote
             }
             return false;
         }
+
+        public static void ProcessConfigMessage(JsonElement root)
+        {
+            Console.WriteLine("Processing config message...");
+
+            Console.WriteLine("Config processing completed.");
+        }
+
     }
 }
