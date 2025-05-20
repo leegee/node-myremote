@@ -173,7 +173,6 @@ namespace MyRemote
             Env.Load("../../.env");
         }
 
-        // Main function to process incoming message
         public static void ProcessMessage(string message)
         {
             Console.WriteLine("Processing message: " + message);
@@ -183,12 +182,10 @@ namespace MyRemote
             string? key = null;
             VirtualKeyCode? virtualKey = null;
 
-            // Attempt to get the "key" property
             if (root.TryGetProperty("key", out var keyProperty))
             {
                 key = keyProperty.GetString();
 
-                // If the key is null, just return without doing anything
                 if (key == null)
                 {
                     Console.WriteLine("Key is null, skipping processing.");
@@ -205,10 +202,8 @@ namespace MyRemote
 
             string[] modifiers = Array.Empty<string>();
 
-            // Attempt to get the "modifiers" property
-            if (root.TryGetProperty("modifiers", out var modifiersProperty))
+               if (root.TryGetProperty("modifiers", out var modifiersProperty))
             {
-                // Check if the modifiers property is an array
                 if (modifiersProperty.ValueKind == JsonValueKind.Array)
                 {
                     modifiers = modifiersProperty
@@ -218,30 +213,20 @@ namespace MyRemote
                         .Cast<string>()
                         .ToArray();
 
-                    // If the array is empty, log and return
-                    if (modifiers.Length == 0)
-                    {
-                        Console.WriteLine("Modifiers array is empty, skipping processing.");
-                        return;
-                    }
-
-                    // Proceed with the modifiers logic
-                    Console.WriteLine("Modifiers: " + string.Join(", ", modifiers));
-                    // Further logic...
+                    Console.WriteLine("Modifiers: " + (modifiers.Length > 0 ? string.Join(", ", modifiers) : "none"));
                 }
                 else
                 {
-                    Console.WriteLine("Modifiers property is not an array.");
-                    return;
+                    Console.WriteLine("Modifiers property is not an array. Ignoring modifiers.");
+                    modifiers = Array.Empty<string>();
                 }
             }
             else
             {
-                Console.WriteLine("Modifiers property not found.");
-                return;
+                Console.WriteLine("Modifiers property not found. Assuming no modifiers.");
+                modifiers = Array.Empty<string>();
             }
 
-            // Create KeySimulator and simulate the key press
             var keySimulator = new KeySimulator();
             keySimulator.SimulateKeyPress(key, modifiers);
         }
