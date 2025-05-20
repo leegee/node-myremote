@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -284,7 +285,15 @@ namespace MyRemote
         {
             Console.WriteLine("Processing config message...");
 
-            Console.WriteLine("Config processing completed.");
+            string jsonString = root.GetRawText();
+            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string myAppFolder = Path.Combine(appDataFolder, "MyRemote");
+            Directory.CreateDirectory(myAppFolder); 
+
+            string configPath = Path.Combine(myAppFolder, "custom-config.json");
+            File.WriteAllText(configPath, jsonString);
+
+            Console.WriteLine("Config saved to: " + configPath);
         }
 
     }
