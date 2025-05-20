@@ -25,7 +25,7 @@
   function deleteCommand(index: number) {
     if (confirm("Are you sure you want to delete this command?")) {
       commandsStore.update((currentCommands) =>
-        currentCommands.filter((_, i) => i !== index)
+        currentCommands.filter((_, i) => i !== index),
       );
     }
   }
@@ -52,7 +52,7 @@
     <tr>
       <th>Icon</th>
       <th>Text</th>
-      <th>Color</th>
+      <th>Clr</th>
       <th>Key</th>
       {#each possibleModifiers as modifier}
         <th class="modifier"> {modifier} </th>
@@ -90,7 +90,7 @@
             <td>{command.text}</td>
             <td>
               <span class="clr" style="background-color:{command.color}"
-                >{command.color}</span
+                >&nbsp;</span
               >
             </td>
             <td class="key">{command.key}</td>
