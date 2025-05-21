@@ -101,6 +101,7 @@ run the dotnet release build, after which a tar ball can be created:
 
 ## Future Work
 
+* Build the installer with GitHub Actions
 * For dev, have Vite open the full URL
 * Parse a Cubase XML
 * Expose the regex used to select Cubase
