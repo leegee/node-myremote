@@ -56,6 +56,8 @@
     align-items: center;
     width: auto;
     max-width: 45em;
+    max-height: 100%;
+    overflow: hidden;
   }
 
   header {
@@ -86,5 +88,6 @@
   .modal-content {
     padding: 1em 0;
     overflow: auto;
+    height: 100vh;
   }
 </style>
