@@ -85,5 +85,6 @@
 
   .modal-content {
     padding: 1em 0;
+    overflow: auto;
   }
 </style>
