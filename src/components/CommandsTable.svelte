@@ -23,7 +23,7 @@
     setupDragAndDrop(commands, commandsStore);
 
   function deleteCommand(index: number) {
-    if (confirm("Are you sure you want to delete this command?")) {
+    if (confirm("Are you sure you want to delete this?")) {
       commandsStore.update((currentCommands) =>
         currentCommands.filter((_, i) => i !== index),
       );
