@@ -86,17 +86,20 @@
               <td></td>
             {/each}
           {:else}
-            <td class="icon">{command.icon}</td>
-            <td>{command.text}</td>
+            <td title="Icon" class="icon">{command.icon}</td>
+            <td title="Title">{command.text}</td>
             <td>
-              <span class="clr" style="background-color:{command.color}"
-                >&nbsp;</span
+              <span
+                class="clr"
+                style="background-color:{command.color}"
+                title="Background">&nbsp;</span
               >
             </td>
-            <td class="key">{command.key}</td>
+            <td title="Key" class="key">{command.key}</td>
             {#each possibleModifiers as modifier}
               <td class="modifier">
                 <input
+                  title={"Modifier " + modifier}
                   type="checkbox"
                   checked={command.modifiers?.includes(modifier)}
                   disabled
@@ -105,13 +108,18 @@
             {/each}
           {/if}
           <td>
-            <button on:click={() => editCommand(index)}>🖉</button>
+            <button title="Edit" on:click={() => editCommand(index)}>🖉</button>
           </td>
           <td>
-            <button on:click={() => deleteCommand(index)}>🗑</button>
+            <button title="Delete" on:click={() => deleteCommand(index)}
+              >🗑</button
+            >
           </td>
           <td>
-            <button on:click={() => insertLinebreak(index)}>↲</button>
+            <button
+              title="Insert a new command after"
+              on:click={() => insertLinebreak(index)}>↲</button
+            >
           </td>
         </tr>
       {/if}
