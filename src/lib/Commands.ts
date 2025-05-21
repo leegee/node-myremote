@@ -4,11 +4,11 @@ import defaultCommandsJson from '../../commands.json';
 const LOCAL_STORAGE_KEY = 'remote_cmds';
 
 export function setCommandsToDefault(): Command[] {
-    saveCommands(defaultCommandsJson as Command[]);
+    saveCommandsToLocalStorage(defaultCommandsJson as Command[]);
     return defaultCommandsJson as Command[];
 }
 
-export function loadCommands() {
+export function loadCommandsFromLocalStorage() {
     console.log("Loading commands");
     let parsedCommands: Command[];
     try {
@@ -22,12 +22,12 @@ export function loadCommands() {
     return parsedCommands;
 };
 
-export function saveCommands(commands: Command[]) {
+export function saveCommandsToLocalStorage(commands: Command[]) {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(commands));
 }
 
 export function downloadCommandsJson() {
-    const commands = loadCommands();
+    const commands = loadCommandsFromLocalStorage();
     const blob = new Blob([JSON.stringify(commands, null, 2)], { type: 'application/json' });
 
     // Create a link element to trigger the download
@@ -53,7 +53,7 @@ export function loadCommandsFromFile(event: Event) {
         try {
             const content = e.target?.result as string;
             const parsedCommands: Command[] = JSON.parse(content);
-            saveCommands(parsedCommands);
+            saveCommandsToLocalStorage(parsedCommands);
             console.log("Commands loaded:", parsedCommands);
         } catch (error) {
             console.error("Error loading file:", error);

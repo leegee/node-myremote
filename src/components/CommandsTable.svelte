@@ -45,6 +45,10 @@
   function clearEditing() {
     commandEdidintIndex = null;
   }
+
+  function saveEdited() {
+    clearEditing();
+  }
 </script>
 
 <table class="command-table">
@@ -68,6 +72,7 @@
           {possibleModifiers}
           {command}
           on:cancel={clearEditing}
+          on:saved={saveEdited}
         />
       {:else}
         <tr

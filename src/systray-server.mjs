@@ -68,8 +68,7 @@ async function getTargetAppWindow() {
 function processMessage(jsonString) {
     try {
         const message = JSON.parse(jsonString);
-        console.debug("processMessage command:", message);
-        if (message.type) {
+        if (message.type && message.type === 'config') {
             processConfigMessage(message)
         } else {
             sendKeyCombo(message);
@@ -80,9 +79,18 @@ function processMessage(jsonString) {
 }
 
 // Received type:'config', config:Config - write the file
-function processConfigMessage(jsonConfigString) {
-    fs.writeFileSync(customCustomConfigFilePath, jsonConfigString, 'utf-8');
-    console.info('Wrote config to', customCustomConfigFilePath);
+function processConfigMessage(message) {
+    const { type, commands } = message;
+    if (!commands || !type) {
+        console.error('Invalid message', message);
+    } else {
+        fs.writeFileSync(
+            customCustomConfigFilePath,
+            JSON.stringify(commands, null, 4),
+            'utf-8'
+        );
+        console.info('Wrote config to', customCustomConfigFilePath);
+    }
 }
 
 async function sendKeyCombo(keyMessage) {

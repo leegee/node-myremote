@@ -1,10 +1,17 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { commandsStore } from "./stores/commandsStore";
   import IconList from "./components/IconList.svelte";
   import EditCommands from "./components/CommandsTable.svelte";
   import Modal from "./components/Modal.svelte";
+  import type { Command } from "./types/commands";
 
-  let ws: WebSocket;
+  type MessageType = {
+    type: "config";
+    commands: Command[];
+  };
+
+  let wsInstance: WebSocket;
   let isConnected: boolean = false;
   let connectionError: string | null = null;
   let WS_MAX_RECONNECT_ATTEMPTS = 100000;
@@ -24,12 +31,14 @@
         resolve(wsInstance);
       };
 
-      // noop
       wsInstance.onmessage = (event) => {
-        console.log(
-          "Message from server:",
-          JSON.stringify(event.data, null, 4),
-        );
+        try {
+          const message = JSON.parse(event.data);
+          console.log("Message from server:" + message);
+          processMessage(message);
+        } catch (e) {
+          console.error("Error decoding WS message:", e);
+        }
       };
 
       wsInstance.onclose = () => {
@@ -58,7 +67,7 @@
 
   async function setupWebSocket() {
     try {
-      ws = await initWebSocket();
+      wsInstance = await initWebSocket();
       connectionError = null;
     } catch (error) {
       console.error("Failed to connect WebSocket:", error);
@@ -66,19 +75,24 @@
     }
   }
 
-  // async function setFullScreen() {
-  //   if (!document.fullscreenElement) {
-  //     await document.documentElement.requestFullscreen();
-  //     if (screen.orientation && screen.orientation.lock) {
-  //       screen.orientation.lock("landscape").catch(console.error);
-  //     }
-  //   }
-  //   window.removeEventListener("click", setFullScreen);
-  // }
+  function processMessage(message: MessageType) {
+    if (message.type && message.type === "config") {
+    }
+  }
 
   onMount(() => {
     setupWebSocket();
-    // window.addEventListener("click", setFullScreen);
+  });
+
+  commandsStore.subscribe((commands) => {
+    if (wsInstance && wsInstance.readyState === WebSocket.OPEN) {
+      wsInstance.send(
+        JSON.stringify({
+          type: "config",
+          commands,
+        }),
+      );
+    }
   });
 </script>
 
@@ -90,7 +104,7 @@
   </nav>
 
   {#if isConnected}
-    <IconList {ws} />
+    <IconList ws={wsInstance} />
   {:else if connectionError}
     <p style="background-color: red; color: white; font-weight: bold">
       {connectionError}

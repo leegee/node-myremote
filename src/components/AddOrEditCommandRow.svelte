@@ -52,19 +52,10 @@
         ]);
       }
 
-      // Reset input fields
-      resetFields();
+      cancelEdit();
     } else {
       alert("Please fill in all fields!");
     }
-  }
-
-  function resetFields() {
-    icon = "";
-    text = "";
-    color = "";
-    key = "";
-    selectedModifiers = [];
   }
 
   function toggleModifier(modifier: Modifier) {
@@ -88,7 +79,7 @@
     <input type="text" bind:value={text} placeholder="Text" />
   </td>
   <td>
-    <input type="color" bind:value={color} />
+    <input type="color" bind:value={color} style="background-color:{color}" />
   </td>
   <td class="key">
     <input type="text" bind:value={key} placeholder="Key" />

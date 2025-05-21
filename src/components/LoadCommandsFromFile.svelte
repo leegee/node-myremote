@@ -3,7 +3,7 @@
 <script lang="ts">
   import { commandsStore } from "../stores/commandsStore";
   import type { Command } from "../types/commands";
-  import { saveCommands } from "../lib/Commands";
+  import { saveCommandsToLocalStorage } from "../lib/Commands";
 
   function loadCommandsFromFile(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -20,7 +20,7 @@
         const content = e.target?.result as string;
         const parsedCommands: Command[] = JSON.parse(content);
 
-        saveCommands(parsedCommands);
+        saveCommandsToLocalStorage(parsedCommands);
         commandsStore.set(parsedCommands);
         console.log("Commands loaded:", parsedCommands);
       } catch (error) {
