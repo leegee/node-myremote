@@ -25,11 +25,11 @@ const APP_DATA_FOLDER =
         ? path.join(os.homedir(), 'Library', 'Application Support') // macOS
         : path.join(os.homedir(), '.config')); // Linux
 
-const MY_APP_FOLDER = path.join(APP_DATA_FOLDER, import.meta.env.VITE_APP_TITLE ?? "MyRemote");
+const MY_APP_FOLDER = path.join(APP_DATA_FOLDER, process.env.VITE_APP_TITLE ?? "MyRemote");
 if (!fs.existsSync(MY_APP_FOLDER)) {
     fs.mkdirSync(MY_APP_FOLDER, { recursive: true });
 }
-const customCustomConfigFilePath = Path.Combine(MY_APP_FOLDER, "custom-config.json");
+const customCustomConfigFilePath = path.join(MY_APP_FOLDER, "custom-config.json");
 const defaultCustomConfigFilePath = path.join(__dirname, '..', 'commands.json');
 
 const getLocalIP = () => {
