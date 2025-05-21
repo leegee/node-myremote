@@ -29,13 +29,12 @@ const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
     for (const name of Object.keys(interfaces)) {
         for (const net of interfaces[name]) {
-            // 'IPv4' and internal address (localhost) filtering
             if (net.family === 'IPv4' && !net.internal) {
                 return net.address;
             }
         }
     }
-    return null; // Fallback if no external IPv4 is found
+    return null;
 };
 
 function kill(tray, wss) {
@@ -164,6 +163,7 @@ Tray.create(
                 action: () => open(httpAddressLink)
             }),
             TRAY.item("Show", () => open(httpAddressLink)),
+            // should add the qr code here
             TRAY.separator(),
             TRAY.item("Quit", () => kill(TRAY, wss))
         );

@@ -172,7 +172,6 @@ namespace MyRemote
 
         static MessageHandler()
         {
-            // Load environment variables to access TARGET_APP_REGEX
             Env.Load("../../.env");
             AppTitle = Environment.GetEnvironmentVariable("VITE_APP_TITLE");
         }
