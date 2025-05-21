@@ -25,6 +25,13 @@ const APP_DATA_FOLDER =
         ? path.join(os.homedir(), 'Library', 'Application Support') // macOS
         : path.join(os.homedir(), '.config')); // Linux
 
+const MY_APP_FOLDER = path.join(APP_DATA_FOLDER, import.meta.env.VITE_APP_TITLE ?? "MyRemote");
+if (!fs.existsSync(MY_APP_FOLDER)) {
+    fs.mkdirSync(MY_APP_FOLDER, { recursive: true });
+}
+const customCustomConfigFilePath = Path.Combine(MY_APP_FOLDER, "custom-config.json");
+const defaultCustomConfigFilePath = path.join(__dirname, '..', 'commands.json');
+
 const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
     for (const name of Object.keys(interfaces)) {
@@ -73,14 +80,9 @@ function processMessage(jsonString) {
 }
 
 // Received type:'config', config:Config - write the file
-function processConfigMessage(message) {
-    const myAppFolder = path.join(APP_DATA_FOLDER, import.meta.env.VITE_APP_TITLE ?? "MyRemote");
-    if (!fs.existsSync(myAppFolder)) {
-        fs.mkdirSync(myAppFolder, { recursive: true });
-    }
-    const configPath = Path.Combine(myAppFolder, "custom-config.json");
-    fs.writeFileSync(configPath, jsonString, 'utf-8');
-    console.info('Wrote config to', configPath);
+function processConfigMessage(jsonConfigString) {
+    fs.writeFileSync(customCustomConfigFilePath, jsonConfigString, 'utf-8');
+    console.info('Wrote config to', customCustomConfigFilePath);
 }
 
 async function sendKeyCombo(keyMessage) {
@@ -151,6 +153,13 @@ Tray.create(
         wss.on('connection', (ws) => {
             console.info('WS client connected');
             // TRAY.notify( appTitle, 'Connected' );
+
+            if (fs.existsSync(customCustomConfigFilePath)) {
+                ws.send(fs.readFileSync(customCustomConfigFilePath, 'utf-8'));
+            } else {
+                ws.send(fs.readFileSync(defaultCustomConfigFilePath, 'utf-8'));
+            }
+
             ws.on('message', processMessage);
             ws.on('close', () => {
                 console.info('Client disconnected');

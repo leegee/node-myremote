@@ -176,9 +176,11 @@ namespace MyRemote
             AppTitle = Environment.GetEnvironmentVariable("VITE_APP_TITLE");
         }
 
-        public static void ProcessMessage(string message)
+        public static string? ProcessMessage(string message)
         {
             Console.WriteLine("Processing message: " + message);
+
+            var response = new Dictionary<string, string>();
 
             using JsonDocument doc = JsonDocument.Parse(message);
             JsonElement root = doc.RootElement;
@@ -197,7 +199,8 @@ namespace MyRemote
                         Console.WriteLine($"Unknown message type '{type}', ignoring.");
                         break;
                 }
-                return;
+                // todo
+                return JsonSerializer.Serialize(response);
             }
 
             string? key = null;
@@ -209,7 +212,7 @@ namespace MyRemote
                 if (key == null)
                 {
                     Console.WriteLine("Key is null, skipping processing.");
-                    return;
+                    return JsonSerializer.Serialize(new { error = "Key is null, skipping processing." });
                 }
 
                 virtualKey = ConvertKey(key);
@@ -217,7 +220,7 @@ namespace MyRemote
             else
             {
                 Console.WriteLine("Key/Type properties not found.");
-                return;
+                return JsonSerializer.Serialize(new { error = "ey/Type properties not found."});
             }
 
             string[] modifiers = Array.Empty<string>();
@@ -249,6 +252,8 @@ namespace MyRemote
 
             var keySimulator = new KeySimulator();
             keySimulator.SimulateKeyPress(key, modifiers);
+
+            return JsonSerializer.Serialize(new { ok = true });
         }
 
         private static VirtualKeyCode ConvertKey(string key)
@@ -288,14 +293,9 @@ namespace MyRemote
             Console.WriteLine("Processing config message...");
 
             string jsonString = root.GetRawText();
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string myAppFolder = Path.Combine(appDataFolder, AppTitle ?? "MyRemote"); // env.VITE_APP_TITLE
-            Directory.CreateDirectory(myAppFolder); 
+            File.WriteAllText(WebSocketServer.CustomConfigFilePath, jsonString);
 
-            string configPath = Path.Combine(myAppFolder, "custom-config.json");
-            File.WriteAllText(configPath, jsonString);
-
-            Console.WriteLine("Config saved to: " + configPath);
+            Console.WriteLine("Config saved to: " + WebSocketServer.CustomConfigFilePath);
         }
 
     }

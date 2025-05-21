@@ -17,6 +17,20 @@ namespace MyRemote
         private HttpListener? _listener;
         private CancellationTokenSource? _cts;
 
+        public static readonly string AppFolder;
+        public static readonly string CustomConfigFilePath;
+        public static readonly string DefaultConfigFilePath;
+
+        static WebSocketServer()
+        {
+            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appTitle = Environment.GetEnvironmentVariable("VITE_APP_TITLE") ?? "MyRemote";
+            AppFolder = Path.Combine(appDataFolder, appTitle);
+            Directory.CreateDirectory(AppFolder);
+            CustomConfigFilePath = Path.Combine(AppFolder, "custom-config.json");
+            DefaultConfigFilePath = Path.Combine(AppContext.BaseDirectory, "commands.json");
+        }
+
         public async Task StartAsync(int port)
         {
             try
@@ -150,6 +164,16 @@ namespace MyRemote
                 )
                 {
                     Console.WriteLine("WebSocket connection established");
+                    // Handhsake sends config file
+                    string pathToUse = File.Exists(CustomConfigFilePath) ? CustomConfigFilePath : DefaultConfigFilePath;
+                    byte[] configFileBytes = File.ReadAllBytes(pathToUse);
+                    await webSocket.SendAsync(
+                        new ArraySegment<byte>(configFileBytes),
+                        WebSocketMessageType.Binary,
+                        true,
+                        token
+                    );
+
 
                     var buffer = new byte[1024];
                     while (webSocket.State == WebSocketState.Open && !token.IsCancellationRequested)
