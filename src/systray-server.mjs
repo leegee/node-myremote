@@ -13,18 +13,24 @@ import open from 'open';
 
 let TRAY;
 
-const REQUIRED_ENV_VARS = [ 'VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE' ];
-const VALID_MODIFIERS = [ 'control', 'shift', 'alt', 'command' ];
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = path.dirname( __filename );
-const DIST_DIR = path.join( __dirname, '..', 'dist' );
+const REQUIRED_ENV_VARS = ['VITE_WS_PORT', 'VITE_APP_TITLE', 'VITE_APP_RE'];
+const VALID_MODIFIERS = ['control', 'shift', 'alt', 'command'];
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DIST_DIR = path.join(__dirname, '..', 'dist');
+
+const APP_DATA_FOLDER =
+    process.env.APPDATA || // Windows
+    (process.platform === 'darwin' // maybe in future...
+        ? path.join(os.homedir(), 'Library', 'Application Support') // macOS
+        : path.join(os.homedir(), '.config')); // Linux
 
 const getLocalIP = () => {
     const interfaces = os.networkInterfaces();
-    for ( const name of Object.keys( interfaces ) ) {
-        for ( const net of interfaces[ name ] ) {
+    for (const name of Object.keys(interfaces)) {
+        for (const net of interfaces[name]) {
             // 'IPv4' and internal address (localhost) filtering
-            if ( net.family === 'IPv4' && !net.internal ) {
+            if (net.family === 'IPv4' && !net.internal) {
                 return net.address;
             }
         }
@@ -32,121 +38,136 @@ const getLocalIP = () => {
     return null; // Fallback if no external IPv4 is found
 };
 
-function kill ( tray, wss ) {
+function kill(tray, wss) {
     tray.kill();
     wss.close();
 }
 
-async function getTargetAppWindow () {
+async function getTargetAppWindow() {
     let rv = null;
-    for ( const window of windowManager.getWindows() ) {
-        if ( reContainsTargetApp.test( window.path ) ) {
+    for (const window of windowManager.getWindows()) {
+        if (reContainsTargetApp.test(window.path)) {
             window.bringToTop();
             rv = window;
             break;
         }
     }
 
-    if ( rv === null ) {
-        console.warn( "No active window found." );
+    if (rv === null) {
+        console.warn("No active window found.");
     }
     return rv;
 }
 
-function processMessage ( message ) {
+function processMessage(jsonString) {
     try {
-        const command = JSON.parse( message );
-        console.debug( "processMessage command:", command );
-        sendKeyCombo( command );
-    } catch ( e ) {
-        console.error( "processMessage error from message:", e );
+        const message = JSON.parse(jsonString);
+        console.debug("processMessage command:", message);
+        if (message.type) {
+            processConfigMessage(message)
+        } else {
+            sendKeyCombo(message);
+        }
+    } catch (e) {
+        console.error("processMessage error from message:", e);
     }
 }
 
-async function sendKeyCombo ( command ) {
+// Received type:'config', config:Config - write the file
+function processConfigMessage(message) {
+    const myAppFolder = path.join(APP_DATA_FOLDER, import.meta.env.VITE_APP_TITLE ?? "MyRemote");
+    if (!fs.existsSync(myAppFolder)) {
+        fs.mkdirSync(myAppFolder, { recursive: true });
+    }
+    const configPath = Path.Combine(myAppFolder, "custom-config.json");
+    fs.writeFileSync(configPath, jsonString, 'utf-8');
+    console.info('Wrote config to', configPath);
+}
+
+async function sendKeyCombo(keyMessage) {
     try {
         const targetAppWindow = await getTargetAppWindow();
-        if ( !targetAppWindow ) {
-            TRAY.notify( appTitle, 'Is your target app running?' );
+        if (!targetAppWindow) {
+            TRAY.notify(appTitle, 'Is your target app running?');
             return;
         }
 
-        const modifiers = Array.isArray( command.modifiers )
-            ? command.modifiers.filter( modifier => VALID_MODIFIERS.includes( modifier ) )
+        const modifiers = Array.isArray(keyMessage.modifiers)
+            ? keyMessage.modifiers.filter(modifier => VALID_MODIFIERS.includes(modifier))
             : [];
 
-        console.debug( "Sending", command.key, modifiers );
-        robot.keyTap( command.key, modifiers );
-        console.debug( "Sent command to target app." );
+        console.debug("Sending", keyMessage.key, modifiers);
+        robot.keyTap(keyMessage.key, modifiers);
+        console.debug("Sent command to target app.");
     }
 
-    catch ( error ) {
-        console.error( "Error sending key combination:", error );
+    catch (error) {
+        console.error("Error sending key combination:", error);
     }
 }
 
-const httpServer = http.createServer( ( _req, res ) => {
-    fs.readFile( path.join( DIST_DIR, 'index.html' ), ( err, data ) => {
-        if ( err ) {
-            console.error( err );
+const httpServer = http.createServer((_req, res) => {
+    fs.readFile(path.join(DIST_DIR, 'index.html'), (err, data) => {
+        if (err) {
+            console.error(err);
             res.statusCode = 404;
-            res.setHeader( 'Content-Type', 'text/plain' );
-            res.end( '404: Not Found' );
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('404: Not Found');
         } else {
             res.statusCode = 200;
-            res.setHeader( 'Content-Type', 'text/html' );
-            res.end( data );
+            res.setHeader('Content-Type', 'text/html');
+            res.end(data);
         }
-    } );
-} );
+    });
+});
 
 dotenv.config();
 
-const missingEnvVars = REQUIRED_ENV_VARS.filter( varName => !process.env[ varName ] );
-if ( missingEnvVars.length > 0 ) {
-    console.error( `Missing required environment variables: ${ missingEnvVars.join( ', ' ) }` );
-    process.exit( 1 );
+const missingEnvVars = REQUIRED_ENV_VARS.filter(varName => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    process.exit(1);
 }
 
 const appTitle = process.env.VITE_APP_TITLE || 'MyRemote';
 const regexp = process.env.VITE_APP_RE;
-const reContainsTargetApp = new RegExp( regexp, 'i' );
+const reContainsTargetApp = new RegExp(regexp, 'i');
 const wsPort = process.env.VITE_WS_PORT || 8223;
 const httpPort = process.env.VITE_HTTP_PORT || 8224;
 const wsAddress = 'ws://' + getLocalIP() + ':' + wsPort;
-const httpAddressLink = 'http://' + getLocalIP() + ':' + httpPort + '?' + encodeURIComponent( wsAddress );
+const httpAddressLink = 'http://' + getLocalIP() + ':' + httpPort + '?' + encodeURIComponent(wsAddress);
 
 Tray.create(
-    ( _tray ) => {
+    (_tray) => {
         TRAY = _tray;
-        httpServer.listen( httpPort, '0.0.0.0', () => {
-            console.info( `HTTP server running at ${ httpAddressLink }/` );
-        } );
+        httpServer.listen(httpPort, '0.0.0.0', () => {
+            console.info(`HTTP server running at ${httpAddressLink}/`);
+        });
 
-        const wss = new WebSocketServer( {
+        const wss = new WebSocketServer({
             port: wsPort
-        } );
-        console.info( `WS server running on port ${ wsPort }/` );
+        });
+        console.info(`WS server running on port ${wsPort}/`);
 
-        wss.on( 'connection', ( ws ) => {
-            console.info( 'WS client connected' );
+        wss.on('connection', (ws) => {
+            console.info('WS client connected');
             // TRAY.notify( appTitle, 'Connected' );
-            ws.on( 'message', processMessage );
-            ws.on( 'close', () => {
-                console.info( 'Client disconnected' );
-            } );
-        } );
+            ws.on('message', processMessage);
+            ws.on('close', () => {
+                console.info('Client disconnected');
+            });
+        });
 
         TRAY.setMenu(
-            TRAY.item( appTitle, {
+            TRAY.item(appTitle, {
                 bold: true,
-                action: () => open( httpAddressLink )
-            } ),
-            TRAY.item( "Show", () => open( httpAddressLink ) ),
+                action: () => open(httpAddressLink)
+            }),
+            TRAY.item("Show", () => open(httpAddressLink)),
             TRAY.separator(),
-            TRAY.item( "Quit", () => kill( TRAY, wss ) )
+            TRAY.item("Quit", () => kill(TRAY, wss))
         );
-        TRAY.setTitle( appTitle );
+        TRAY.setTitle(appTitle);
     }
 );
 
