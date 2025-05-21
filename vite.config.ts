@@ -31,7 +31,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    assetsInlineLimit: 100000000,
+    assetsInlineLimit: 100_000_000,
     outDir: 'dist'
   },
 });
