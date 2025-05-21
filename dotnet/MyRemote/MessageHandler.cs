@@ -168,10 +168,13 @@ namespace MyRemote
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        public static readonly string AppTitle;
+
         static MessageHandler()
         {
             // Load environment variables to access TARGET_APP_REGEX
             Env.Load("../../.env");
+            AppTitle = Environment.GetEnvironmentVariable("VITE_APP_TITLE");
         }
 
         public static void ProcessMessage(string message)
@@ -287,7 +290,7 @@ namespace MyRemote
 
             string jsonString = root.GetRawText();
             string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string myAppFolder = Path.Combine(appDataFolder, "MyRemote");
+            string myAppFolder = Path.Combine(appDataFolder, AppTitle ?? "MyRemote"); // env.VITE_APP_TITLE
             Directory.CreateDirectory(myAppFolder); 
 
             string configPath = Path.Combine(myAppFolder, "custom-config.json");
