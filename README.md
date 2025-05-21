@@ -95,6 +95,10 @@ run the dotnet release build, after which a tar ball can be created:
 
 `start` will output the remote's full URL to the console.
 
+## Work in progress
+
+* Persisting custom configuration
+
 ## Future Work
 
 * For dev, have Vite open the full URL
