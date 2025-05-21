@@ -4,8 +4,10 @@
   import { setCommandsToDefault } from "../lib/Commands";
 
   function handleResetToDefaults() {
-    const defaultCommands = setCommandsToDefault();
-    commandsStore.set(defaultCommands);
+    if (confirm("Reset all commands?")) {
+      const defaultCommands = setCommandsToDefault();
+      commandsStore.set(defaultCommands);
+    }
   }
 </script>
 
