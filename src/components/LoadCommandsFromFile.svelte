@@ -42,5 +42,5 @@
 />
 
 <button on:click={() => document.getElementById("commandsFileInput")?.click()}>
-  Load
+  Import
 </button>

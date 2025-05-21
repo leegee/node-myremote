@@ -3,4 +3,4 @@
   import { downloadCommandsJson } from "../lib/Commands";
 </script>
 
-<button on:click={downloadCommandsJson}> Save </button>
+<button on:click={downloadCommandsJson}> Export </button>
