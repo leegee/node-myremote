@@ -10,9 +10,7 @@
     wsInstance,
   } from "./lib/WebSocket";
 
-  onMount(() => {
-    setupWebSocket();
-  });
+  onMount(setupWebSocket);
 </script>
 
 <main>
